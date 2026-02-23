@@ -1,0 +1,96 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id               String            @id @default(uuid())
+    firebaseUid      String            @unique
+    name             String
+    email            String            @unique
+    role             Role              @default(VOLUNTEER)
+    committee        String?
+    createdAt        DateTime          @default(now())
+    shiftAssignments ShiftAssignment[]
+    swapRequests     SwapRequest[]
+    swapFulfillments SwapFulfillment[]
+    attendance       Attendance[]
+}
+
+model Shift {
+    id               String            @id @default(uuid())
+    date             DateTime
+    startTime        DateTime
+    endTime          DateTime
+    committee        String
+    capacity         Int
+    createdAt        DateTime          @default(now())
+    shiftAssignments ShiftAssignment[]
+    swapRequests     SwapRequest[]
+}
+
+model ShiftAssignment {
+    id        String   @id @default(uuid())
+    userId    String
+    shiftId   String
+    createdAt DateTime @default(now())
+    user      User     @relation(fields: [userId], references: [id])
+    shift     Shift    @relation(fields: [shiftId], references: [id])
+}
+
+model SwapRequest {
+    id               String            @id @default(uuid())
+    requesterId      String
+    shiftId          String
+    blockStart       DateTime
+    blockEnd         DateTime
+    status           SwapStatus        @default(OPEN)
+    createdAt        DateTime          @default(now())
+    requester        User              @relation(fields: [requesterId], references: [id])
+    shift            Shift             @relation(fields: [shiftId], references: [id])
+    swapFulfillments SwapFulfillment[]
+}
+
+model SwapFulfillment {
+    id            String      @id @default(uuid())
+    swapRequestId String
+    volunteerId   String
+    blockStart    DateTime
+    blockEnd      DateTime
+    approvedBy    String?
+    approvedAt    DateTime?
+    createdAt     DateTime    @default(now())
+    swapRequest   SwapRequest @relation(fields: [swapRequestId], references: [id])
+    volunteer     User        @relation(fields: [volunteerId], references: [id])
+}
+
+model Attendance {
+    id        String           @id @default(uuid())
+    userId    String
+    shiftId   String
+    status    AttendanceStatus @default(PRESENT)
+    createdAt DateTime         @default(now())
+    user      User             @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+    VOLUNTEER
+    ADMIN
+}
+
+enum SwapStatus {
+    OPEN
+    PARTIALLY_FILLED
+    FILLED
+    CANCELLED
+}
+
+enum AttendanceStatus {
+    PRESENT
+    ABSENT
+    LATE
+}
