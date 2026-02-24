@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Anabel's Grocery
+<div align="center">
+<img width="274" height="128" alt="image" src="https://github.com/user-attachments/assets/41d0f92c-daee-4782-89e2-e606466a1392" />
+</div>
 
-## Getting Started
+Anabel's Grocery is a nonprofit grocery store that provides fresh produce to Cornell students and promotes education on food, justice, and sustainability.
 
-First, run the development server:
+## About the Project
+This project aims to develop a volunteer management system for Anabel's Grocery. The system will allow volunteers to sign up, track, and swap shifts, and for admin to manage volunteer schedule and attendance.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Built With
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- [![Next][Next.js]][Next-url]
+- [![React][React.js]][React-url]
+- [![Express][Express.js]][Express-url]
+- [![Postresql][Prisma.io]][Prisma-url]
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Contributors
+### Spring 2026
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Leads
+  - Jade Lee
+  - Brian Sa
+- Developers
+  - Nalini Agnihotri
+  - Nathan Dang
+  - Ben Han
+  - Avery Yang
+- Designers
+  - Afran Ahmed
+  - Alanna
+  - Selena Chen
 
-## Learn More
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
+[Next-url]: https://nextjs.org/
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
+[Prisma.io]: https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white
+[Express.js]: https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB
+[Express-url]: https://expressjs.com/
+[Prisma-url]: https://www.prisma.io/
