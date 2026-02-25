@@ -21,16 +21,28 @@ model User {
     attendance       Attendance[]
 }
 
+model TimeBlock {
+    id               String            @id @default(uuid())
+    name             String // e.g. "Morning", "Afternoon"
+    startTime        String // stored as "HH:MM" e.g. "09:00"
+    endTime          String // stored as "HH:MM" e.g. "11:00"
+    createdAt        DateTime          @default(now())
+    shifts           Shift[]
+    swapRequests     SwapRequest[]
+    swapFulfillments SwapFulfillment[]
+}
+
 model Shift {
     id               String            @id @default(uuid())
     date             DateTime
-    startTime        DateTime
-    endTime          DateTime
+    timeBlockId      String
     committee        String
     capacity         Int
     createdAt        DateTime          @default(now())
+    timeBlock        TimeBlock         @relation(fields: [timeBlockId], references: [id])
     shiftAssignments ShiftAssignment[]
     swapRequests     SwapRequest[]
+    attendance       Attendance[]
 }
 
 model ShiftAssignment {
@@ -46,12 +58,13 @@ model SwapRequest {
     id               String            @id @default(uuid())
     requesterId      String
     shiftId          String
-    blockStart       DateTime
-    blockEnd         DateTime
+    timeBlockId      String // which block of the shift is being offered
     status           SwapStatus        @default(OPEN)
+    reason           String?
     createdAt        DateTime          @default(now())
     requester        User              @relation(fields: [requesterId], references: [id])
     shift            Shift             @relation(fields: [shiftId], references: [id])
+    timeBlock        TimeBlock         @relation(fields: [timeBlockId], references: [id])
     swapFulfillments SwapFulfillment[]
 }
 
@@ -59,13 +72,13 @@ model SwapFulfillment {
     id            String      @id @default(uuid())
     swapRequestId String
     volunteerId   String
-    blockStart    DateTime
-    blockEnd      DateTime
+    timeBlockId   String // which block they're covering
     approvedBy    String?
     approvedAt    DateTime?
     createdAt     DateTime    @default(now())
     swapRequest   SwapRequest @relation(fields: [swapRequestId], references: [id])
     volunteer     User        @relation(fields: [volunteerId], references: [id])
+    timeBlock     TimeBlock   @relation(fields: [timeBlockId], references: [id])
 }
 
 model Attendance {
@@ -73,8 +86,11 @@ model Attendance {
     userId    String
     shiftId   String
     status    AttendanceStatus @default(PRESENT)
+    notes     String?
+    markedBy  String? // admin who marked it
     createdAt DateTime         @default(now())
     user      User             @relation(fields: [userId], references: [id])
+    shift     Shift            @relation(fields: [shiftId], references: [id])
 }
 
 enum Role {
@@ -93,4 +109,5 @@ enum AttendanceStatus {
     PRESENT
     ABSENT
     LATE
+    EXCUSED
 }
