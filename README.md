@@ -5,6 +5,23 @@
 
 Anabel's Grocery is a nonprofit grocery store that provides fresh produce to Cornell students and promotes education on food, justice, and sustainability.
 
+## Getting started
+
+1. Clone the repo and enter the project directory.
+2. Install dependencies (includes Next.js, React, Express, Prisma, etc.):
+
+   ```bash
+   npm install
+   ```
+
+3. Run the Next.js dev server:
+
+   ```bash
+   npm run dev
+   ```
+
+   To run the Express server instead: `node server.js`
+
 ## About the Project
 This project aims to develop a volunteer management system for Anabel's Grocery. The system will allow volunteers to sign up, track, and swap shifts, and for admin to manage volunteer schedule and attendance.
 

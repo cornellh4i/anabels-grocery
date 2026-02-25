@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@prisma/client": "5.22.0",
+    "express": "^5.2.1",
     "next": "16.1.6",
     "prisma": "5.22.0",
     "react": "19.2.3",
@@ -25,5 +26,10 @@
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "description": "<div align=\"center\"> <img width=\"274\" height=\"128\" alt=\"image\" src=\"https://github.com/user-attachments/assets/41d0f92c-daee-4782-89e2-e606466a1392\" /> </div>",
+  "main": "server.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
