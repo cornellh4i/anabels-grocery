@@ -17,7 +17,6 @@ const navLinks = [
   { href: '/admin/time-blocks', label: 'Time Blocks' },
   { href: '/admin/users', label: 'Users' },
   { href: '/admin/shifts', label: 'Shifts' },
-  { href: '/admin/shift-assignments', label: 'Shift Assignments' },
   { href: '/admin/swap-requests', label: 'Swap Requests' },
   { href: '/admin/swap-fulfillments', label: 'Swap Fulfillments' },
   { href: '/admin/attendance', label: 'Attendance' },

@@ -17,11 +17,6 @@ const adminLinks = [
     description: 'Create and schedule shifts by date and time block',
   },
   {
-    href: '/admin/shift-assignments',
-    label: 'Shift Assignments',
-    description: 'Assign volunteers to shifts',
-  },
-  {
     href: '/admin/swap-requests',
     label: 'Swap Requests',
     description: 'Review open and fulfilled swap requests',

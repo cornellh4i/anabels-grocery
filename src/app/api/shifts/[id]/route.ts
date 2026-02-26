@@ -3,7 +3,7 @@ import type { Shift } from '@/types';
 
 type Context = { params: Promise<{ id: string }> };
 
-// TODO: PUT /api/shifts/[id] — update date, timeBlockId, committee, or capacity
+// TODO: PUT /api/shifts/[id] — update date, timeBlockId, or userId
 export async function PUT(
   request: NextRequest,
   context: Context,

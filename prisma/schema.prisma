@@ -13,9 +13,8 @@ model User {
     name             String
     email            String            @unique
     role             Role              @default(VOLUNTEER)
-    committee        String?
     createdAt        DateTime          @default(now())
-    shiftAssignments ShiftAssignment[]
+    shifts           Shift[]
     swapRequests     SwapRequest[]
     swapFulfillments SwapFulfillment[]
     attendance       Attendance[]
@@ -33,25 +32,15 @@ model TimeBlock {
 }
 
 model Shift {
-    id               String            @id @default(uuid())
-    date             DateTime
-    timeBlockId      String
-    committee        String
-    capacity         Int
-    createdAt        DateTime          @default(now())
-    timeBlock        TimeBlock         @relation(fields: [timeBlockId], references: [id])
-    shiftAssignments ShiftAssignment[]
-    swapRequests     SwapRequest[]
-    attendance       Attendance[]
-}
-
-model ShiftAssignment {
-    id        String   @id @default(uuid())
-    userId    String
-    shiftId   String
-    createdAt DateTime @default(now())
-    user      User     @relation(fields: [userId], references: [id])
-    shift     Shift    @relation(fields: [shiftId], references: [id])
+    id          String       @id @default(uuid())
+    date        DateTime
+    timeBlockId String
+    userId      String
+    createdAt   DateTime     @default(now())
+    timeBlock   TimeBlock    @relation(fields: [timeBlockId], references: [id])
+    user        User         @relation(fields: [userId], references: [id])
+    swapRequests SwapRequest[]
+    attendance  Attendance[]
 }
 
 model SwapRequest {

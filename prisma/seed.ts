@@ -9,7 +9,6 @@ async function main() {
   await prisma.attendance.deleteMany();
   await prisma.swapFulfillment.deleteMany();
   await prisma.swapRequest.deleteMany();
-  await prisma.shiftAssignment.deleteMany();
   await prisma.shift.deleteMany();
   await prisma.timeBlock.deleteMany();
   await prisma.user.deleteMany();
@@ -31,70 +30,60 @@ async function main() {
       name: 'brian sa',
       email: '1@cornell.edu',
       role: Role.ADMIN,
-      committee: 'people_ops',
     }}),
     prisma.user.create({ data: {
       firebaseUid: 'firebase-admin-002',
       name: 'jade lee',
       email: '2@cornell.edu',
       role: Role.ADMIN,
-      committee: 'people_ops',
     }}),
     prisma.user.create({ data: {
       firebaseUid: 'firebase-vol-001',
       name: 'afran ahmed',
       email: '3@cornell.edu',
       role: Role.VOLUNTEER,
-      committee: 'purchasing',
     }}),
     prisma.user.create({ data: {
       firebaseUid: 'firebase-vol-002',
       name: 'selena chen',
       email: '4@cornell.edu',
       role: Role.VOLUNTEER,
-      committee: 'purchasing',
     }}),
     prisma.user.create({ data: {
       firebaseUid: 'firebase-vol-003',
       name: 'avery yang',
       email: '5@cornell.edu',
       role: Role.VOLUNTEER,
-      committee: 'marketing',
     }}),
     prisma.user.create({ data: {
       firebaseUid: 'firebase-vol-004',
       name: 'ben han',
       email: '6@cornell.edu',
       role: Role.VOLUNTEER,
-      committee: 'marketing',
     }}),
     prisma.user.create({ data: {
       firebaseUid: 'firebase-vol-005',
       name: 'nalini a',
       email: '7@cornell.edu',
       role: Role.VOLUNTEER,
-      committee: 'collab_edu',
     }}),
     prisma.user.create({ data: {
       firebaseUid: 'firebase-vol-006',
       name: 'nathan d',
       email: '8@cornell.edu',
       role: Role.VOLUNTEER,
-      committee: 'collab_edu',
     }}),
     prisma.user.create({ data: {
       firebaseUid: 'firebase-vol-007',
       name: 'alanna',
       email: '9@cornell.edu',
       role: Role.VOLUNTEER,
-      committee: 'people_ops',
     }}),
     prisma.user.create({ data: {
       firebaseUid: 'firebase-vol-008',
       name: 'zoey',
       email: '10@cornell.edu',
       role: Role.VOLUNTEER,
-      committee: 'purchasing',
     }}),
   ]);
   console.log('users created');
@@ -113,49 +102,26 @@ async function main() {
     return d;
   }
 
-  const shifts = await Promise.all([
-    // Monday
-    prisma.shift.create({ data: { date: weekday(0), timeBlockId: morning.id,   committee: 'purchasing',  capacity: 3 } }),
-    prisma.shift.create({ data: { date: weekday(0), timeBlockId: afternoon.id, committee: 'marketing',   capacity: 2 } }),
-    // Tuesday
-    prisma.shift.create({ data: { date: weekday(1), timeBlockId: midday.id,    committee: 'purchasing',  capacity: 3 } }),
-    prisma.shift.create({ data: { date: weekday(1), timeBlockId: evening.id,   committee: 'collab_edu',  capacity: 2 } }),
-    // Wednesday
-    prisma.shift.create({ data: { date: weekday(2), timeBlockId: morning.id,   committee: 'marketing',   capacity: 3 } }),
-    prisma.shift.create({ data: { date: weekday(2), timeBlockId: midday.id,    committee: 'collab_edu',  capacity: 2 } }),
-    // Thursday
-    prisma.shift.create({ data: { date: weekday(3), timeBlockId: afternoon.id, committee: 'purchasing',  capacity: 3 } }),
-    prisma.shift.create({ data: { date: weekday(3), timeBlockId: evening.id,   committee: 'marketing',   capacity: 2 } }),
-    // Friday
-    prisma.shift.create({ data: { date: weekday(4), timeBlockId: morning.id,   committee: 'collab_edu',  capacity: 3 } }),
-    prisma.shift.create({ data: { date: weekday(4), timeBlockId: midday.id,    committee: 'purchasing',  capacity: 2 } }),
-  ]);
-  console.log('shifts created');
-
   const [monMorning, monAfternoon, tueMidday, tueEvening,
          wedMorning, wedMidday, thuAfternoon, thuEvening,
-         friMorning, friMidday] = shifts;
-
-  // ─── Shift Assignments ─────────────────────────────────────────
-  await Promise.all([
-    prisma.shiftAssignment.create({ data: { userId: v1.id, shiftId: monMorning.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v2.id, shiftId: monMorning.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v5.id, shiftId: monAfternoon.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v3.id, shiftId: tueMidday.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v4.id, shiftId: tueMidday.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v7.id, shiftId: tueEvening.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v5.id, shiftId: wedMorning.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v6.id, shiftId: wedMorning.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v7.id, shiftId: wedMidday.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v8.id, shiftId: wedMidday.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v1.id, shiftId: thuAfternoon.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v3.id, shiftId: thuAfternoon.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v4.id, shiftId: thuEvening.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v6.id, shiftId: friMorning.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v8.id, shiftId: friMidday.id } }),
-    prisma.shiftAssignment.create({ data: { userId: v2.id, shiftId: friMidday.id } }),
+         friMorning, friMidday] = await Promise.all([
+    // Monday
+    prisma.shift.create({ data: { date: weekday(0), timeBlockId: morning.id,   userId: v1.id, } }),
+    prisma.shift.create({ data: { date: weekday(0), timeBlockId: afternoon.id, userId: v5.id } }),
+    // Tuesday
+    prisma.shift.create({ data: { date: weekday(1), timeBlockId: midday.id,    userId: v3.id } }),
+    prisma.shift.create({ data: { date: weekday(1), timeBlockId: evening.id,   userId: v7.id } }),
+    // Wednesday
+    prisma.shift.create({ data: { date: weekday(2), timeBlockId: morning.id,   userId: v5.id } }),
+    prisma.shift.create({ data: { date: weekday(2), timeBlockId: midday.id,    userId: v7.id } }),
+    // Thursday
+    prisma.shift.create({ data: { date: weekday(3), timeBlockId: afternoon.id, userId: v1.id } }),
+    prisma.shift.create({ data: { date: weekday(3), timeBlockId: evening.id,   userId: v4.id } }),
+    // Friday
+    prisma.shift.create({ data: { date: weekday(4), timeBlockId: morning.id,   userId: v6.id } }),
+    prisma.shift.create({ data: { date: weekday(4), timeBlockId: midday.id,    userId: v8.id } }),
   ]);
-  console.log('shift assignments created');
+  console.log('shifts created');
 
   // ─── Swap Requests ─────────────────────────────────────────────
   const [swap1, swap2, swap3] = await Promise.all([
@@ -184,7 +150,7 @@ async function main() {
       reason: 'visiting',
     }}),
   ]);
-  console.log('sSwap requests created');
+  console.log('swap requests created');
 
   // ─── Swap Fulfillments ─────────────────────────────────────────
   await Promise.all([
@@ -205,24 +171,25 @@ async function main() {
   ]);
   console.log('swap fulfillments created');
 
-  // ─── Attendance (mark last week's shifts as past) ──────────────
+  // ─── Attendance ────────────────────────────────────────────────
   await Promise.all([
-    prisma.attendance.create({ data: { userId: v1.id, shiftId: monMorning.id,   status: AttendanceStatus.PRESENT,  markedBy: admin1.id } }),
-    prisma.attendance.create({ data: { userId: v2.id, shiftId: monMorning.id,   status: AttendanceStatus.LATE,     markedBy: admin1.id, notes: 'Arrived 15 min late' } }),
-    prisma.attendance.create({ data: { userId: v5.id, shiftId: monAfternoon.id, status: AttendanceStatus.PRESENT,  markedBy: admin1.id } }),
-    prisma.attendance.create({ data: { userId: v3.id, shiftId: tueMidday.id,    status: AttendanceStatus.ABSENT,   markedBy: admin2.id, notes: 'No show, no notice' } }),
-    prisma.attendance.create({ data: { userId: v4.id, shiftId: tueMidday.id,    status: AttendanceStatus.PRESENT,  markedBy: admin2.id } }),
-    prisma.attendance.create({ data: { userId: v7.id, shiftId: tueEvening.id,   status: AttendanceStatus.EXCUSED,  markedBy: admin2.id, notes: 'Medical excuse submitted' } }),
+    prisma.attendance.create({ data: { userId: v1.id, shiftId: monMorning.id,   status: AttendanceStatus.PRESENT, markedBy: admin1.id } }),
+    prisma.attendance.create({ data: { userId: v5.id, shiftId: monAfternoon.id, status: AttendanceStatus.PRESENT, markedBy: admin1.id } }),
+    prisma.attendance.create({ data: { userId: v3.id, shiftId: tueMidday.id,    status: AttendanceStatus.ABSENT,  markedBy: admin2.id, notes: 'No show, no notice' } }),
+    prisma.attendance.create({ data: { userId: v7.id, shiftId: tueEvening.id,   status: AttendanceStatus.EXCUSED, markedBy: admin2.id, notes: 'Medical excuse submitted' } }),
   ]);
   console.log('attendance records created');
 
-  console.log('\n🎉 Seed complete!');
+  // suppress unused-var warnings for users not referenced above
+  void v2; void v4; void v8; void swap1;
+  void monAfternoon; void wedMidday; void thuAfternoon; void thuEvening; void friMorning; void friMidday;
+
+  console.log('\nSeed complete!');
   console.log(`   2 admins, 8 volunteers`);
   console.log(`   4 time blocks, 10 shifts this week`);
-  console.log(`   16 shift assignments`);
   console.log(`   3 swap requests (1 open, 1 partial, 1 filled)`);
   console.log(`   2 swap fulfillments`);
-  console.log(`   6 attendance records`);
+  console.log(`   4 attendance records`);
 }
 
 main()

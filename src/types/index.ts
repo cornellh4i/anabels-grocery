@@ -1,4 +1,4 @@
-// TypeScript types mirroring every Prisma model in backend/prisma/schema.prisma.
+// TypeScript types mirroring every Prisma model in prisma/schema.prisma.
 // Dates are typed as Date (Prisma) — JSON responses will serialize them as ISO strings.
 
 export type Role = 'VOLUNTEER' | 'ADMIN';
@@ -13,7 +13,6 @@ export interface User {
   name: string;
   email: string;
   role: Role;
-  committee: string | null;
   createdAt: Date;
 }
 
@@ -32,15 +31,7 @@ export interface Shift {
   id: string;
   date: Date;
   timeBlockId: string;
-  committee: string;
-  capacity: number;
-  createdAt: Date;
-}
-
-export interface ShiftAssignment {
-  id: string;
   userId: string;
-  shiftId: string;
   createdAt: Date;
 }
 
