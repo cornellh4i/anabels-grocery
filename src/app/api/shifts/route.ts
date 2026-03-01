@@ -1,15 +1,57 @@
-import { NextRequest, NextResponse } from 'next/server';
-import type { Shift } from '@/types';
+import { NextRequest, NextResponse } from "next/server";
+import type { Shift } from "@/types";
+import { prisma } from "@/lib/prisma";
 
-// TODO: GET /api/shifts — return all shifts ordered by date, include timeBlock and user relations
-export async function GET(): Promise<NextResponse<Shift[]>> {
-  return NextResponse.json([]);
+export async function GET(): Promise<
+  NextResponse<Shift[] | { error: string }>
+> {
+  try {
+    const shifts = await prisma.shift.findMany({
+      orderBy: {
+        date: "asc",
+      },
+      include: {
+        timeBlock: true,
+        user: true,
+      },
+    });
+    return NextResponse.json(shifts);
+  } catch {
+    return NextResponse.json(
+      { error: "Failed to get shifts" },
+      { status: 500 },
+    );
+  }
 }
 
-// TODO: POST /api/shifts — create shift with { date, timeBlockId, userId }
 export async function POST(
   request: NextRequest,
 ): Promise<NextResponse<Shift | { error: string }>> {
-  void request;
-  return NextResponse.json({ error: 'Not implemented' }, { status: 501 });
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { error: "Request body must be valid JSON" },
+      { status: 400 },
+    );
+  }
+
+  const { date, timeBlockId, userId } = body as {
+    date: string;
+    timeBlockId: string;
+    userId: string;
+  };
+
+  try {
+    const shift = await prisma.shift.create({
+      data: { date: new Date(date), timeBlockId, userId },
+    });
+    return NextResponse.json(shift, { status: 201 });
+  } catch {
+    return NextResponse.json(
+      { error: "Failed to create shift" },
+      { status: 500 },
+    );
+  }
 }
