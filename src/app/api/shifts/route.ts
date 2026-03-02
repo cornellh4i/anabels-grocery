@@ -49,6 +49,12 @@ export async function POST(
       { status: 400 },
     );
   }
+  if (typeof timeBlockId !== "string" || timeBlockId.trim() == "") {
+    return NextResponse.json(
+      { error: "'timeBlockId' is required and cannot be empty" },
+      { status: 400 },
+    );
+  }
   if (typeof userId !== "string" || userId.trim() == "") {
     return NextResponse.json(
       { error: "'userId' is required and cannot be empty" },
