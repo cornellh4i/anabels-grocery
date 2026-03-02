@@ -43,6 +43,19 @@ export async function POST(
     userId: string;
   };
 
+  if (typeof date !== "string" || date.trim() == "") {
+    return NextResponse.json(
+      { error: "'date' is required and cannot be empty" },
+      { status: 400 },
+    );
+  }
+  if (typeof userId !== "string" || userId.trim() == "") {
+    return NextResponse.json(
+      { error: "'userId' is required and cannot be empty" },
+      { status: 400 },
+    );
+  }
+
   try {
     const shift = await prisma.shift.create({
       data: { date: new Date(date), timeBlockId, userId },
