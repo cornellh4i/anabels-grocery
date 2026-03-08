@@ -4,7 +4,6 @@ import type { Shift } from "@/types";
 
 type Context = { params: Promise<{ id: string }> };
 
-// TODO: PUT /api/shifts/[id] — update date, timeBlockId, or userId
 export async function PUT(
   request: NextRequest,
   context: Context,
@@ -55,7 +54,6 @@ export async function PUT(
   }
 }
 
-// TODO: DELETE /api/shifts/[id] — delete shift, 404 if not found
 export async function DELETE(
   _request: NextRequest,
   context: Context,
