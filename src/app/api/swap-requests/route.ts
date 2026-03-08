@@ -63,10 +63,10 @@ export async function POST(
   }
 
   try {
-    const request = await prisma.swapRequest.create({
+    const newRequest = await prisma.swapRequest.create({
       data: { requesterId, shiftId, timeBlockId, reason },
     });
-    return NextResponse.json(request, { status: 201 });
+    return NextResponse.json(newRequest, { status: 201 });
   } catch {
     return NextResponse.json(
       { error: "Failed to create swap request" },
