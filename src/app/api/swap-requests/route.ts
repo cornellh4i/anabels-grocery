@@ -41,7 +41,7 @@ export async function POST(
     requesterId: string;
     shiftId: string;
     timeBlockId: string;
-    reason: string;
+    reason?: string;
   };
   if (typeof requesterId !== "string" || requesterId.trim() == "") {
     return NextResponse.json(
@@ -61,12 +61,7 @@ export async function POST(
       { status: 400 },
     );
   }
-  if (typeof reason !== "string" || reason.trim() == "") {
-    return NextResponse.json(
-      { error: "'reason' is required and cannot be empty" },
-      { status: 400 },
-    );
-  }
+
   try {
     const request = await prisma.swapRequest.create({
       data: { requesterId, shiftId, timeBlockId, reason },
