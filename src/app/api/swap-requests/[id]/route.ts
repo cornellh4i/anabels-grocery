@@ -3,7 +3,6 @@ import type { SwapRequest } from '@/types';
 
 type Context = { params: Promise<{ id: string }> };
 
-// TODO: PUT /api/swap-requests/[id] — update status or reason, 404 if not found
 export async function PUT(
   request: NextRequest,
   context: Context,
@@ -12,3 +11,4 @@ export async function PUT(
   void request;
   return NextResponse.json({ error: 'Not implemented' }, { status: 501 });
 }
+
