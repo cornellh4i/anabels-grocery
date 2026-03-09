@@ -14,60 +14,59 @@ model User {
     email            String            @unique
     role             Role              @default(VOLUNTEER)
     createdAt        DateTime          @default(now())
-    shifts           Shift[]
-    swapRequests     SwapRequest[]
+    shiftAssignments ShiftAssignment[]
     swapFulfillments SwapFulfillment[]
     attendance       Attendance[]
 }
 
 model TimeBlock {
-    id               String            @id @default(uuid())
-    name             String // e.g. "Morning", "Afternoon"
-    startTime        String // stored as "HH:MM" e.g. "09:00"
-    endTime          String // stored as "HH:MM" e.g. "11:00"
-    createdAt        DateTime          @default(now())
-    shifts           Shift[]
-    swapRequests     SwapRequest[]
-    swapFulfillments SwapFulfillment[]
+    id        String   @id @default(uuid())
+    name      String // e.g. "Morning", "Midday"
+    startTime String // "HH:MM" — must be exactly 1hr before endTime
+    endTime   String // "HH:MM"
+    createdAt DateTime @default(now())
+    shifts    Shift[]
 }
 
 model Shift {
-    id          String       @id @default(uuid())
+    id          String            @id @default(uuid())
     date        DateTime
     timeBlockId String
-    userId      String
-    createdAt   DateTime     @default(now())
-    timeBlock   TimeBlock    @relation(fields: [timeBlockId], references: [id])
-    user        User         @relation(fields: [userId], references: [id])
-    swapRequests SwapRequest[]
+    committee   String // 'people_ops' | 'purchasing' | 'marketing' | 'collab_edu'
+    capacity    Int
+    createdAt   DateTime          @default(now())
+    timeBlock   TimeBlock         @relation(fields: [timeBlockId], references: [id])
+    assignments ShiftAssignment[]
     attendance  Attendance[]
 }
 
+model ShiftAssignment {
+    id           String        @id @default(uuid())
+    userId       String
+    shiftId      String
+    createdAt    DateTime      @default(now())
+    user         User          @relation(fields: [userId], references: [id])
+    shift        Shift         @relation(fields: [shiftId], references: [id])
+    swapRequests SwapRequest[]
+}
+
 model SwapRequest {
-    id               String            @id @default(uuid())
-    requesterId      String
-    shiftId          String
-    timeBlockId      String // which block of the shift is being offered
-    status           SwapStatus        @default(OPEN)
-    reason           String?
-    createdAt        DateTime          @default(now())
-    requester        User              @relation(fields: [requesterId], references: [id])
-    shift            Shift             @relation(fields: [shiftId], references: [id])
-    timeBlock        TimeBlock         @relation(fields: [timeBlockId], references: [id])
-    swapFulfillments SwapFulfillment[]
+    id                String            @id @default(uuid())
+    shiftAssignmentId String
+    status            SwapStatus        @default(OPEN)
+    reason            String?
+    createdAt         DateTime          @default(now())
+    shiftAssignment   ShiftAssignment   @relation(fields: [shiftAssignmentId], references: [id])
+    fulfillments      SwapFulfillment[]
 }
 
 model SwapFulfillment {
     id            String      @id @default(uuid())
     swapRequestId String
     volunteerId   String
-    timeBlockId   String // which block they're covering
-    approvedBy    String?
-    approvedAt    DateTime?
     createdAt     DateTime    @default(now())
     swapRequest   SwapRequest @relation(fields: [swapRequestId], references: [id])
     volunteer     User        @relation(fields: [volunteerId], references: [id])
-    timeBlock     TimeBlock   @relation(fields: [timeBlockId], references: [id])
 }
 
 model Attendance {
@@ -76,7 +75,7 @@ model Attendance {
     shiftId   String
     status    AttendanceStatus @default(PRESENT)
     notes     String?
-    markedBy  String? // admin who marked it
+    markedBy  String?
     createdAt DateTime         @default(now())
     user      User             @relation(fields: [userId], references: [id])
     shift     Shift            @relation(fields: [shiftId], references: [id])
@@ -89,7 +88,6 @@ enum Role {
 
 enum SwapStatus {
     OPEN
-    PARTIALLY_FILLED
     FILLED
     CANCELLED
 }

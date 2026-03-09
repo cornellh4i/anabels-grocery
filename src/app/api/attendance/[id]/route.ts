@@ -13,14 +13,10 @@ export async function PUT(
     // unwrap params because Next.js returns a Promise
     const { id } = await context.params;
 
-    console.log('PUT request received for attendance id:', id);
 
     // parse JSON body
     const body = await request.json();
     const { status, notes, markedBy } = body;
-
-    console.log('Request body:', body);
-    console.log('Updating fields:', { status, notes, markedBy });
 
     // update attendance record
     const updatedRecord = await prisma.attendance.update({
