@@ -56,13 +56,13 @@ export async function PUT(
   }
   if (existing.status === "FILLED") {
     return NextResponse.json(
-      { error: "swap request is already filled" },
+      { error: "Swap request is already filled" },
       { status: 400 },
     );
   }
   if (existing.status === "CANCELLED") {
     return NextResponse.json(
-      { error: "swap request is cancelled" },
+      { error: "Swap request is cancelled" },
       { status: 400 },
     );
   }
