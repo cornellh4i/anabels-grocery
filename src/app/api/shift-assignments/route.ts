@@ -28,13 +28,87 @@ export async function GET(): Promise<
   }
 }
 
-// TODO: create a new shift assignment
-// Required fields: userId (string), shiftId (string)
-// Before creating, check that the shift exists and has not exceeded capacity
-// Return 400 if fields are missing, 404 if shift not found, 409 if at capacity, 201 on success
+function isNotFound(e: unknown): boolean {
+  return (
+    e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025'
+  );
+}
+
 export async function POST(
   request: NextRequest,
 ): Promise<NextResponse<ShiftAssignment | { error: string }>> {
-  void request;
-  return NextResponse.json({ error: 'Not implemented' }, { status: 501 });
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { error: 'Request body must be valid JSON' },
+      { status: 400 },
+    );
+  }
+
+  if (typeof body !== 'object' || body === null) {
+    return NextResponse.json(
+      { error: 'Request body must be an object' },
+      { status: 400 },
+    );
+  }
+
+  const { userId, shiftId } = body as Record<string, unknown>;
+
+  if (typeof userId !== 'string' || userId.trim() === '') {
+    return NextResponse.json(
+      { error: '"userId" is required and cannot be empty' },
+      { status: 400 },
+    );
+  }
+
+  if (typeof shiftId !== 'string' || shiftId.trim() === '') {
+    return NextResponse.json(
+      { error: '"shiftId" is required and cannot be empty' },
+      { status: 400 },
+    );
+  }
+
+  try {
+    const shift = await prisma.shift.findUnique({
+      where: { id: shiftId },
+      include: { _count: { select: { assignments: true } } },
+    });
+
+    if (!shift) {
+      return NextResponse.json(
+        { error: `Shift with id "${shiftId}" not found` },
+        { status: 404 },
+      );
+    }
+
+    if (shift._count.assignments >= shift.capacity) {
+      return NextResponse.json(
+        { error: 'Shift is at capacity' },
+        { status: 409 },
+      );
+    }
+
+    const assignment = await prisma.shiftAssignment.create({
+      data: { userId, shiftId },
+      include: {
+        user: true,
+        shift: { include: { timeBlock: true } },
+      },
+    });
+
+    return NextResponse.json(assignment, { status: 201 });
+  } catch (e) {
+    if (isNotFound(e)) {
+      return NextResponse.json(
+        { error: 'Referenced user or shift not found' },
+        { status: 404 },
+      );
+    }
+    return NextResponse.json(
+      { error: 'Failed to create shift assignment' },
+      { status: 500 },
+    );
+  }
 }
