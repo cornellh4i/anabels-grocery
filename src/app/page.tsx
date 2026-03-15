@@ -24,7 +24,7 @@ const adminLinks = [
   {
     href: '/admin/swap-fulfillments',
     label: 'Swap Fulfillments',
-    description: 'Approve volunteers covering swapped shifts',
+    description: 'View volunteers covering swapped shifts',
   },
   {
     href: '/admin/attendance',
