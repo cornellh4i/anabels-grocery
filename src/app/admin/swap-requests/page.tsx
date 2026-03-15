@@ -1,5 +1,5 @@
 // TODO: List all swap requests with requester name, shift date, status, and reason.
-//       Allow filtering by status (OPEN, PARTIALLY_FILLED, FILLED, CANCELLED).
+//       Allow filtering by status (OPEN, FILLED, CANCELLED).
 //       Allow admins to update the status of a swap request via PUT /api/swap-requests/[id].
 
 export default function SwapRequestsPage() {

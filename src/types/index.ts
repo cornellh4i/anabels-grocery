@@ -3,7 +3,7 @@
 
 export type Role = 'VOLUNTEER' | 'ADMIN';
 
-export type SwapStatus = 'OPEN' | 'PARTIALLY_FILLED' | 'FILLED' | 'CANCELLED';
+export type SwapStatus = 'OPEN' | 'FILLED' | 'CANCELLED';
 
 export type AttendanceStatus = 'PRESENT' | 'ABSENT' | 'LATE' | 'EXCUSED';
 
@@ -31,16 +31,14 @@ export interface Shift {
   id: string;
   date: Date;
   timeBlockId: string;
-  userId: string;
+  committee: string;
+  capacity: number;
   createdAt: Date;
 }
 
 export interface SwapRequest {
   id: string;
-  requesterId: string;
-  shiftId: string;
-  /** Which time block of the shift is being offered */
-  timeBlockId: string;
+  shiftAssignmentId: string;
   status: SwapStatus;
   reason: string | null;
   createdAt: Date;
@@ -50,10 +48,6 @@ export interface SwapFulfillment {
   id: string;
   swapRequestId: string;
   volunteerId: string;
-  /** Which time block the volunteer is covering */
-  timeBlockId: string;
-  approvedBy: string | null;
-  approvedAt: Date | null;
   createdAt: Date;
 }
 
