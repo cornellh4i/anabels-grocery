@@ -45,7 +45,7 @@ This project aims to develop a volunteer management system for Anabel's Grocery.
   - Avery Yang
 - Designers
   - Afran Ahmed
-  - Alanna
+  - Alanna Yang
   - Selena Chen
 
 <!-- MARKDOWN LINKS & IMAGES -->
