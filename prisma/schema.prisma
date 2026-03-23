@@ -1,100 +1,108 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-    id               String            @id @default(uuid())
-    firebaseUid      String            @unique
-    name             String
-    email            String            @unique
-    role             Role              @default(VOLUNTEER)
-    createdAt        DateTime          @default(now())
-    shiftAssignments ShiftAssignment[]
-    swapFulfillments SwapFulfillment[]
-    attendance       Attendance[]
+  id               String            @id @default(uuid())
+  firebaseUid      String            @unique
+  name             String
+  email            String            @unique
+  role             Role              @default(VOLUNTEER)
+  createdAt        DateTime          @default(now())
+  attendance       Attendance[]
+  swapFulfillments SwapFulfillment[]
+  swapRequest      SwapRequest[]
+  shiftAssignment  ShiftAssignment[]
 }
 
 model TimeBlock {
-    id        String   @id @default(uuid())
-    name      String // e.g. "Morning", "Midday"
-    startTime String // "HH:MM" — must be exactly 1hr before endTime
-    endTime   String // "HH:MM"
-    createdAt DateTime @default(now())
-    shifts    Shift[]
+  id            String            @id @default(uuid())
+  name          String
+  startTime     String
+  endTime       String
+  createdAt     DateTime          @default(now())
+  shifts        Shift[]
+  SwapFulfillment SwapFulfillment[]
 }
 
 model Shift {
-    id          String            @id @default(uuid())
-    date        DateTime
-    timeBlockId String
-    committee   String // 'people_ops' | 'purchasing' | 'marketing' | 'collab_edu'
-    capacity    Int
-    createdAt   DateTime          @default(now())
-    timeBlock   TimeBlock         @relation(fields: [timeBlockId], references: [id])
-    assignments ShiftAssignment[]
-    attendance  Attendance[]
+  id          String        @id @default(uuid())
+  date        DateTime
+  createdAt   DateTime      @default(now())
+  timeBlockId String
+  capacity    Int
+  committee   String
+  attendance  Attendance[]
+  timeBlock   TimeBlock     @relation(fields: [timeBlockId], references: [id])
+  assignments ShiftAssignment[]
 }
 
 model ShiftAssignment {
-    id           String        @id @default(uuid())
-    userId       String
-    shiftId      String
-    createdAt    DateTime      @default(now())
-    user         User          @relation(fields: [userId], references: [id])
-    shift        Shift         @relation(fields: [shiftId], references: [id])
-    swapRequests SwapRequest[]
+  id      String @id @default(uuid())
+  shift   Shift  @relation(fields: [shiftId], references: [id])
+  shiftId String
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
+  swapRequests SwapRequest[]
 }
 
 model SwapRequest {
-    id                String            @id @default(uuid())
-    shiftAssignmentId String
-    status            SwapStatus        @default(OPEN)
-    reason            String?
-    createdAt         DateTime          @default(now())
-    shiftAssignment   ShiftAssignment   @relation(fields: [shiftAssignmentId], references: [id])
-    fulfillments      SwapFulfillment[]
+  id                String            @id @default(uuid())
+  requesterId       String
+  shiftAssignmentId String
+  status            SwapStatus        @default(OPEN)
+  createdAt         DateTime          @default(now())
+  reason            String?
+  fulfillments      SwapFulfillment[]
+  User              User              @relation(fields: [requesterId], references: [id])
+  ShiftAssignment   ShiftAssignment   @relation(fields: [shiftAssignmentId], references: [id])
 }
 
 model SwapFulfillment {
-    id            String      @id @default(uuid())
-    swapRequestId String
-    volunteerId   String
-    createdAt     DateTime    @default(now())
-    swapRequest   SwapRequest @relation(fields: [swapRequestId], references: [id])
-    volunteer     User        @relation(fields: [volunteerId], references: [id])
+  id            String      @id @default(uuid())
+  swapRequestId String
+  volunteerId   String
+  timeBlockId   String
+  approvedBy    String?
+  approvedAt    DateTime?
+  createdAt     DateTime    @default(now())
+  swapRequest   SwapRequest @relation(fields: [swapRequestId], references: [id])
+  timeBlock     TimeBlock   @relation(fields: [timeBlockId], references: [id])
+  volunteer     User        @relation(fields: [volunteerId], references: [id])
 }
 
 model Attendance {
-    id        String           @id @default(uuid())
-    userId    String
-    shiftId   String
-    status    AttendanceStatus @default(PRESENT)
-    notes     String?
-    markedBy  String?
-    createdAt DateTime         @default(now())
-    user      User             @relation(fields: [userId], references: [id])
-    shift     Shift            @relation(fields: [shiftId], references: [id])
+  id        String           @id @default(uuid())
+  userId    String
+  shiftId   String
+  status    AttendanceStatus @default(PRESENT)
+  createdAt DateTime         @default(now())
+  markedBy  String?
+  notes     String?
+  shift     Shift            @relation(fields: [shiftId], references: [id])
+  user      User             @relation(fields: [userId], references: [id])
 }
 
 enum Role {
-    VOLUNTEER
-    ADMIN
+  VOLUNTEER
+  ADMIN
 }
 
 enum SwapStatus {
-    OPEN
-    FILLED
-    CANCELLED
+  OPEN
+  PARTIALLY_FILLED
+  FILLED
+  CANCELLED
 }
 
 enum AttendanceStatus {
-    PRESENT
-    ABSENT
-    LATE
-    EXCUSED
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
 }
