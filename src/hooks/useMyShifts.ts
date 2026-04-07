@@ -65,8 +65,13 @@ export function useMyShifts(
       setError(null);
 
       try {
-        // assignemnts
-        const assignmentsResponse = await fetch("/api/shift-assignments");
+        // assignments
+        const assignmentsResponse = await fetch("/api/shift-assignments", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        });
         if (!assignmentsResponse.ok) {
           throw new Error("Failed to fetch shift assignments");
         }
@@ -78,13 +83,23 @@ export function useMyShifts(
         );
 
         // Shifts
-        const shiftsResponse = await fetch("/api/shifts");
+        const shiftsResponse = await fetch("/api/shifts", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        });
         if (!shiftsResponse.ok) {
           throw new Error("Failed to get shifts");
         }
         const shifts = (await shiftsResponse.json()) as ShiftResponse[];
 
-        const timeBlocksResponse = await fetch("/api/time-blocks");
+        const timeBlocksResponse = await fetch("/api/time-blocks", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        });
         if (!timeBlocksResponse.ok) {
           throw new Error("Failed to get time blocks");
         }

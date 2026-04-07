@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { useMyShifts } from "@/hooks/useMyShifts";
 
-const USER_ID = "e1c4ef1a-f802-4b67-b522-9a59f9a4ac46";
+const USER_ID = "59e8182c-6f79-4271-8a96-caa800b00f56";
 
 export default function VolunteerPage() {
   const real = useMyShifts(USER_ID);
@@ -12,9 +12,10 @@ export default function VolunteerPage() {
     console.log("real:", real);
     console.log(
       "sorted asc:",
-      real.data.every((x, i, arr) =>
-        i === 0 || arr[i - 1].shift.date.getTime() <= x.shift.date.getTime()
-      )
+      real.data.every(
+        (x, i, arr) =>
+          i === 0 || arr[i - 1].shift.date.getTime() <= x.shift.date.getTime(),
+      ),
     );
   }, [real]);
 
