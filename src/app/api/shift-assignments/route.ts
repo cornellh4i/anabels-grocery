@@ -3,11 +3,15 @@ import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import type { ShiftAssignment } from '@/types';
 
-export async function GET(): Promise<
+export async function GET(request: NextRequest): Promise<
   NextResponse<ShiftAssignment[] | { error: string }>
 > {
+  const { searchParams } = new URL(request.url);
+  const userId = searchParams.get('userId') ?? undefined;
+
   try {
     const assignments = await prisma.shiftAssignment.findMany({
+      where: userId ? { userId } : undefined,
       orderBy: { createdAt: 'asc' },
       include: {
         user: true,

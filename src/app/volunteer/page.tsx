@@ -1,8 +1,27 @@
+"use client";
+import { useEffect } from "react";
+import { useMyShifts } from "@/hooks/useMyShifts";
+
+const USER_ID = "92995522-c2ff-46f4-b332-fac74dae718c";
+
 export default function VolunteerPage() {
-  return (
-    <div className="max-w-2xl mx-auto p-8">
-      <h1 className="text-2xl font-bold text-gray-900">Volunteer</h1>
-      <p className="text-gray-500 mt-2">Volunteer UI</p>
-    </div>
-  );
+  const real = useMyShifts(USER_ID);
+  const nullCase = useMyShifts(null);
+
+  useEffect(() => {
+    console.log("real:", real);
+    console.log(
+      "sorted asc:",
+      real.data.every(
+        (x, i, arr) =>
+          i === 0 || arr[i - 1].shift.date.getTime() <= x.shift.date.getTime(),
+      ),
+    );
+  }, [real]);
+
+  useEffect(() => {
+    console.log("null:", nullCase);
+  }, [nullCase]);
+
+  return <div>Open console + Network tab</div>;
 }
