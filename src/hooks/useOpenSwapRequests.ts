@@ -1,20 +1,104 @@
 import { useState, useEffect } from "react";
 
-// TODO: Define OpenSwapRequest type
-// swapRequestId, reason, shiftAssignment { id, userId }, shift { id, date, committee }
+export type OpenSwapRequest = {
+  swapRequestId: string;
+  reason: string | null;
+  shiftAssignment: {
+    id: string;
+    userId: string;
+  };
+  shift: {
+    id: string;
+    date: string;
+    committee: string;
+  };
+};
 
-// TODO: Define hook return type { data: OpenSwapRequest[], isLoading, error }
+type UseOpenSwapRequestsReturn = {
+  data: OpenSwapRequest[];
+  isLoading: boolean;
+  error: Error | null;
+};
 
-export function useOpenSwapRequests() {
-  // TODO: Initialize data, isLoading, error state
+type SwapRequestResponse = {
+  id: string;
+  status: string;
+  reason: string | null;
+  shiftAssignment: {
+    id: string;
+    userId: string;
+    shift: {
+      id: string;
+      date: string;
+      committee: string;
+    };
+  };
+};
+
+export function useOpenSwapRequests(): UseOpenSwapRequestsReturn {
+  const [data, setData] = useState<OpenSwapRequest[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    // TODO: Fetch GET /api/swap-requests, filter to status === "OPEN"
-    // TODO: For each, fetch associated ShiftAssignment then Shift
-    // TODO: Combine into OpenSwapRequest shape and set data
-    // TODO: Handle errors, set isLoading in finally
+    let isCancelled = false;
+
+    async function loadOpenSwapRequests(): Promise<void> {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const res = await fetch("/api/swap-requests", {
+          headers: { Accept: "application/json" },
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch swap requests");
+        }
+
+        const swapRequests = (await res.json()) as SwapRequestResponse[];
+
+        const nextData = swapRequests
+          .filter((sr) => sr.status === "OPEN")
+          .map((sr): OpenSwapRequest => ({
+            swapRequestId: sr.id,
+            reason: sr.reason,
+            shiftAssignment: {
+              id: sr.shiftAssignment.id,
+              userId: sr.shiftAssignment.userId,
+            },
+            shift: {
+              id: sr.shiftAssignment.shift.id,
+              date: sr.shiftAssignment.shift.date,
+              committee: sr.shiftAssignment.shift.committee,
+            },
+          }));
+
+        if (!isCancelled) {
+          setData(nextData);
+        }
+      } catch (caughtError: unknown) {
+        if (!isCancelled) {
+          setData([]);
+          setError(
+            caughtError instanceof Error
+              ? caughtError
+              : new Error("Failed to get swap requests"),
+          );
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    void loadOpenSwapRequests();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
-  // TODO: Return { data, isLoading, error }
+  return { data, isLoading, error };
 }
-
