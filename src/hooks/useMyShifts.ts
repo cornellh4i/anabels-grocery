@@ -74,21 +74,23 @@ export function useMyShifts(
           (await assignmentsResponse.json()) as ShiftAssignmentResponse[];
 
         const nextData = assignments
-          .map((assignment): MyShift => ({
-            assignmentId: assignment.id,
-            shift: {
-              id: assignment.shift.id,
-              date: new Date(assignment.shift.date),
-              committee: assignment.shift.committee,
-              capacity: assignment.shift.capacity,
-            },
-            timeBlock: {
-              id: assignment.shift.timeBlock.id,
-              name: assignment.shift.timeBlock.name,
-              startTime: assignment.shift.timeBlock.startTime,
-              endTime: assignment.shift.timeBlock.endTime,
-            },
-          }))
+          .map(
+            (assignment): MyShift => ({
+              assignmentId: assignment.id,
+              shift: {
+                id: assignment.shift.id,
+                date: new Date(assignment.shift.date),
+                committee: assignment.shift.committee,
+                capacity: assignment.shift.capacity,
+              },
+              timeBlock: {
+                id: assignment.shift.timeBlock.id,
+                name: assignment.shift.timeBlock.name,
+                startTime: assignment.shift.timeBlock.startTime,
+                endTime: assignment.shift.timeBlock.endTime,
+              },
+            }),
+          )
           .sort((a, b) => a.shift.date.getTime() - b.shift.date.getTime());
 
         if (!isCancelled) {
