@@ -51,6 +51,13 @@ export interface SwapFulfillment {
   createdAt: Date;
 }
 
+export interface ShiftAssignment {
+  id: string;
+  userId: string;
+  shiftId: string;
+  createdAt: Date;
+}
+
 export interface Attendance {
   id: string;
   userId: string;

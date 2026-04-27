@@ -1,8 +1,8 @@
 // TODO: Replace with real Firebase Admin SDK initialization
 // Install firebase-admin and use service account credentials from .env
 
-import { initializeApp, getApps, cert } from "firebase-admin/app";
-import { getAuth } from "firebase-admin/auth";
+// import { initializeApp, getApps, cert } from "firebase-admin/app";
+// import { getAuth } from "firebase-admin/auth";
 
 // TODO: uncomment and fill in once service account JSON is received
 
