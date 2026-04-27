@@ -1,5 +1,8 @@
-import { initializeApp, getApps, cert } from "firebase-admin/app";
-import { getAuth } from "firebase-admin/auth";
+// TODO: Replace with real Firebase Admin SDK initialization
+// Install firebase-admin and use service account credentials from .env
+
+// import { initializeApp, getApps, cert } from "firebase-admin/app";
+// import { getAuth } from "firebase-admin/auth";
 
 const projectId = process.env.FIREBASE_PROJECT_ID;
 const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
