@@ -11,7 +11,10 @@ export default function LoginPage() {
   const handleSignIn = async () => {
     setError(null);
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      const token = await result.user.getIdToken();
+      document.cookie = `session=${token}; path=/; max-age=3600`;
+      // TODO: redirect to /volunteer after successful sign in using useRouter
       router.push("/volunteer");
     } catch (err) {
       setError("Sign in failed. Please try again with a Cornell Google account.");

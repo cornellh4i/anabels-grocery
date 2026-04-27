@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 export type OpenSwapRequest = {
   swapRequestId: string;
@@ -36,11 +37,17 @@ type SwapRequestResponse = {
 };
 
 export function useOpenSwapRequests(): UseOpenSwapRequestsReturn {
+  const { token } = useAuth();
   const [data, setData] = useState<OpenSwapRequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
+
     let isCancelled = false;
 
     async function loadOpenSwapRequests(): Promise<void> {
@@ -49,10 +56,14 @@ export function useOpenSwapRequests(): UseOpenSwapRequestsReturn {
 
       try {
         const res = await fetch("/api/swap-requests", {
-          headers: { Accept: "application/json" },
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         if (!res.ok) {
+          // TODO: handle 401 — redirect to /login if token is expired or invalid
           throw new Error("Failed to fetch swap requests");
         }
 
@@ -98,7 +109,7 @@ export function useOpenSwapRequests(): UseOpenSwapRequestsReturn {
     return () => {
       isCancelled = true;
     };
-  }, []);
+  }, [token]);
 
   return { data, isLoading, error };
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 export type MyShift = {
   assignmentId: string;
@@ -43,11 +44,17 @@ type ShiftAssignmentResponse = {
 export function useMyShifts(
   userId: string | null | undefined,
 ): UseMyShiftsReturn {
+  const { token } = useAuth();
   const [data, setData] = useState<MyShift[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
+
     let isCancelled = false;
 
     async function loadMyShifts(): Promise<void> {
@@ -64,9 +71,15 @@ export function useMyShifts(
       try {
         const assignmentsResponse = await fetch(
           `/api/shift-assignments?userId=${userId}`,
-          { headers: { Accept: "application/json" } },
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          },
         );
         if (!assignmentsResponse.ok) {
+          // TODO: handle 401 — redirect to /login if token is expired or invalid
           throw new Error("Failed to fetch shift assignments");
         }
 
@@ -117,7 +130,7 @@ export function useMyShifts(
     return () => {
       isCancelled = true;
     };
-  }, [userId]);
+  }, [userId, token]);
 
   return { data, isLoading, error };
 }

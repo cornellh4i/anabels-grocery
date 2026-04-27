@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import type { SwapStatus } from "@/types";
 
 export type SwapRequestWithDetails = {
@@ -41,11 +42,17 @@ type UseSwapRequestsReturn = {
 };
 
 export function useSwapRequests(status?: SwapStatus): UseSwapRequestsReturn {
+  const { token } = useAuth();
   const [data, setData] = useState<SwapRequestWithDetails[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
+
     let isCancelled = false;
 
     async function loadSwapRequests(): Promise<void> {
@@ -54,10 +61,14 @@ export function useSwapRequests(status?: SwapStatus): UseSwapRequestsReturn {
 
       try {
         const response = await fetch("/api/swap-requests", {
-          headers: { Accept: "application/json" },
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         if (!response.ok) {
+          // TODO: handle 401 — redirect to /login if token is expired or invalid
           throw new Error("Failed to fetch swap requests");
         }
 
@@ -94,7 +105,7 @@ export function useSwapRequests(status?: SwapStatus): UseSwapRequestsReturn {
     return () => {
       isCancelled = true;
     };
-  }, [status]);
+  }, [status, token]);
 
   return { data, isLoading, error };
 }

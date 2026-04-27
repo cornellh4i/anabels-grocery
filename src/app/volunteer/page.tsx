@@ -1,8 +1,17 @@
 "use client";
 import { useEffect } from "react";
+import { signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import { useMyShifts } from "@/hooks/useMyShifts";
 
 const USER_ID = "92995522-c2ff-46f4-b332-fac74dae718c";
+
+// TODO: move sign out to a proper nav component once UI is designed
+async function handleSignOut() {
+  await signOut(auth);
+  document.cookie = "session=; path=/; max-age=0";
+  // TODO: redirect to /login after sign out
+}
 
 export default function VolunteerPage() {
   const real = useMyShifts(USER_ID);
@@ -23,5 +32,10 @@ export default function VolunteerPage() {
     console.log("null:", nullCase);
   }, [nullCase]);
 
-  return <div>Open console + Network tab</div>;
+  return (
+    <div>
+      <div>Open console + Network tab</div>
+      <button onClick={handleSignOut}>Sign out</button>
+    </div>
+  );
 }

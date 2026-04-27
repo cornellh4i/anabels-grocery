@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 export type Shift = {
   id: string;
@@ -29,11 +30,17 @@ type UseAllShiftsReturn = {
 };
 
 export function useAllShifts(committee?: string): UseAllShiftsReturn {
+  const { token } = useAuth();
   const [allShifts, setAllShifts] = useState<Shift[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
+
     let isCancelled = false;
 
     async function loadAllShifts(): Promise<void> {
@@ -42,10 +49,14 @@ export function useAllShifts(committee?: string): UseAllShiftsReturn {
 
       try {
         const response = await fetch("/api/shifts", {
-          headers: { Accept: "application/json" },
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         if (!response.ok) {
+          // TODO: handle 401 — redirect to /login if token is expired or invalid
           throw new Error("Failed to fetch shifts");
         }
 
@@ -98,7 +109,7 @@ export function useAllShifts(committee?: string): UseAllShiftsReturn {
     return () => {
       isCancelled = true;
     };
-  }, []);
+  }, [token]);
 
   const data = useMemo(() => {
     return allShifts
