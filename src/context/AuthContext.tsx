@@ -21,9 +21,32 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  // TODO: initialize user, token, isLoading state
-  // TODO: useEffect with onAuthStateChanged listener
-  // TODO: return AuthContext.Provider wrapping children
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const idToken = await firebaseUser.getIdToken();
+        setUser(firebaseUser);
+        setToken(idToken);
+      } else {
+        setUser(null);
+        setToken(null);
+      }
+
+      setIsLoading(false);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  return (
+    <AuthContext.Provider value={{ user, token, isLoading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
