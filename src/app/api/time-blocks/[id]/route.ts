@@ -1,51 +1,71 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { Prisma } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
-import type { TimeBlock } from '@/types';
+import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import type { TimeBlock } from "@/types";
+import { verifyAdmin } from "@/lib/auth";
 
 type Context = { params: Promise<{ id: string }> };
 
 /** Returns true when a Prisma error is a missing record (P2025). */
 function isNotFound(e: unknown): boolean {
-  return e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025';
+  return (
+    e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2025"
+  );
 }
 
 /** Checks that the value is a string in HH:MM format. */
 function isValidTime(value: unknown): value is string {
-  return typeof value === 'string' && /^\d{2}:\d{2}$/.test(value);
+  return typeof value === "string" && /^\d{2}:\d{2}$/.test(value);
 }
 
 export async function PUT(
   request: NextRequest,
   context: Context,
 ): Promise<NextResponse<TimeBlock | { error: string }>> {
+  const { user, error } = await verifyAdmin(request);
+  if (error) return NextResponse.json({ error }, { status: 401 });
+
   const { id } = await context.params;
 
   let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: 'Request body must be valid JSON' }, { status: 400 });
+    return NextResponse.json(
+      { error: "Request body must be valid JSON" },
+      { status: 400 },
+    );
   }
 
-  if (typeof body !== 'object' || body === null) {
-    return NextResponse.json({ error: 'Request body must be an object' }, { status: 400 });
+  if (typeof body !== "object" || body === null) {
+    return NextResponse.json(
+      { error: "Request body must be an object" },
+      { status: 400 },
+    );
   }
 
   const { name, startTime, endTime } = body as Record<string, unknown>;
 
-  if (typeof name !== 'string' || name.trim() === '') {
-    return NextResponse.json({ error: '"name" is required and cannot be empty' }, { status: 400 });
+  if (typeof name !== "string" || name.trim() === "") {
+    return NextResponse.json(
+      { error: '"name" is required and cannot be empty' },
+      { status: 400 },
+    );
   }
   if (!isValidTime(startTime)) {
     return NextResponse.json(
-      { error: '"startTime" must be a valid time in HH:MM format (e.g. "09:00")' },
+      {
+        error:
+          '"startTime" must be a valid time in HH:MM format (e.g. "09:00")',
+      },
       { status: 400 },
     );
   }
   if (!isValidTime(endTime)) {
     return NextResponse.json(
-      { error: '"endTime" must be a valid time in HH:MM format (e.g. "11:00")' },
+      {
+        error: '"endTime" must be a valid time in HH:MM format (e.g. "11:00")',
+      },
       { status: 400 },
     );
   }
@@ -64,9 +84,15 @@ export async function PUT(
     return NextResponse.json(timeBlock);
   } catch (e) {
     if (isNotFound(e)) {
-      return NextResponse.json({ error: `Time block with id "${id}" not found` }, { status: 404 });
+      return NextResponse.json(
+        { error: `Time block with id "${id}" not found` },
+        { status: 404 },
+      );
     }
-    return NextResponse.json({ error: 'Failed to update time block' }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update time block" },
+      { status: 500 },
+    );
   }
 }
 
@@ -74,6 +100,9 @@ export async function DELETE(
   _request: NextRequest,
   context: Context,
 ): Promise<NextResponse<null | { error: string }>> {
+  const { user, error } = await verifyAdmin(_request);
+  if (error) return NextResponse.json({ error }, { status: 401 });
+
   const { id } = await context.params;
 
   try {
@@ -81,8 +110,14 @@ export async function DELETE(
     return new NextResponse(null, { status: 204 });
   } catch (e) {
     if (isNotFound(e)) {
-      return NextResponse.json({ error: `Time block with id "${id}" not found` }, { status: 404 });
+      return NextResponse.json(
+        { error: `Time block with id "${id}" not found` },
+        { status: 404 },
+      );
     }
-    return NextResponse.json({ error: 'Failed to delete time block' }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete time block" },
+      { status: 500 },
+    );
   }
 }

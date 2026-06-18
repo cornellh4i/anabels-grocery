@@ -1,9 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { Prisma, SwapStatus } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
-import type { SwapFulfillment } from '@/types';
+import { NextRequest, NextResponse } from "next/server";
+import { Prisma, SwapStatus } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import type { SwapFulfillment } from "@/types";
+import { verifyAuth } from "@/lib/auth";
 
-export async function GET(): Promise<NextResponse<SwapFulfillment[] | { error: string }>> {
+export async function GET(
+  req: NextRequest,
+): Promise<NextResponse<SwapFulfillment[] | { error: string }>> {
+  const { user, error } = await verifyAuth(req);
+  if (error) return NextResponse.json({ error }, { status: 401 });
+
   try {
     const fulfillments = await prisma.swapFulfillment.findMany({
       include: {
@@ -23,13 +29,13 @@ export async function GET(): Promise<NextResponse<SwapFulfillment[] | { error: s
           },
         },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
 
     return NextResponse.json(fulfillments);
   } catch {
     return NextResponse.json(
-      { error: 'Failed to fetch swap fulfillments' },
+      { error: "Failed to fetch swap fulfillments" },
       { status: 500 },
     );
   }
@@ -38,30 +44,36 @@ export async function GET(): Promise<NextResponse<SwapFulfillment[] | { error: s
 export async function POST(
   request: NextRequest,
 ): Promise<NextResponse<SwapFulfillment | { error: string }>> {
+  const { user, error } = await verifyAuth(request);
+  if (error) return NextResponse.json({ error }, { status: 401 });
+
   let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: 'Request body must be valid JSON' }, { status: 400 });
+    return NextResponse.json(
+      { error: "Request body must be valid JSON" },
+      { status: 400 },
+    );
   }
 
-  if (typeof body !== 'object' || body === null) {
+  if (typeof body !== "object" || body === null) {
     return NextResponse.json(
-      { error: 'Request body must be an object' },
+      { error: "Request body must be an object" },
       { status: 400 },
     );
   }
 
   const { swapRequestId, volunteerId } = body as Record<string, unknown>;
 
-  if (typeof swapRequestId !== 'string' || swapRequestId.trim() === '') {
+  if (typeof swapRequestId !== "string" || swapRequestId.trim() === "") {
     return NextResponse.json(
       { error: '"swapRequestId" is required and cannot be empty' },
       { status: 400 },
     );
   }
 
-  if (typeof volunteerId !== 'string' || volunteerId.trim() === '') {
+  if (typeof volunteerId !== "string" || volunteerId.trim() === "") {
     return NextResponse.json(
       { error: '"volunteerId" is required and cannot be empty' },
       { status: 400 },
@@ -97,7 +109,7 @@ export async function POST(
     }
 
     return NextResponse.json(
-      { error: 'Failed to create swap fulfillment' },
+      { error: "Failed to create swap fulfillment" },
       { status: 500 },
     );
   }

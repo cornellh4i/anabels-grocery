@@ -1,17 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { Prisma } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { verifyAuth } from "@/lib/auth";
 
 type Context = { params: Promise<{ id: string }> };
 
 function isNotFound(e: unknown): boolean {
-  return e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025';
+  return (
+    e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2025"
+  );
 }
 
 export async function DELETE(
   _request: NextRequest,
   context: Context,
 ): Promise<NextResponse<null | { error: string }>> {
+  const { user, error } = await verifyAuth(_request);
+  if (error) return NextResponse.json({ error }, { status: 401 });
+
   const { id } = await context.params;
 
   try {
@@ -29,9 +35,8 @@ export async function DELETE(
     }
 
     return NextResponse.json(
-      { error: 'Failed to delete shift assignment' },
+      { error: "Failed to delete shift assignment" },
       { status: 500 },
     );
   }
 }
-

@@ -1,12 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { Prisma } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { verifyAdmin } from "@/lib/auth";
 
 export async function GET(): Promise<NextResponse> {
   try {
     const shifts = await prisma.shift.findMany({
       orderBy: {
-        date: 'asc',
+        date: "asc",
       },
       include: {
         timeBlock: true,
@@ -19,32 +20,41 @@ export async function GET(): Promise<NextResponse> {
     });
     return NextResponse.json(shifts);
   } catch {
-    return NextResponse.json({ error: 'Failed to get shifts' }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to get shifts" },
+      { status: 500 },
+    );
   }
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  const { user, error } = await verifyAdmin(request);
+  if (error) return NextResponse.json({ error }, { status: 401 });
+
   try {
     let body: unknown;
     try {
       body = await request.json();
     } catch {
       return NextResponse.json(
-        { error: 'Request body must be valid JSON' },
+        { error: "Request body must be valid JSON" },
         { status: 400 },
       );
     }
 
-    if (typeof body !== 'object' || body === null) {
+    if (typeof body !== "object" || body === null) {
       return NextResponse.json(
-        { error: 'Request body must be an object' },
+        { error: "Request body must be an object" },
         { status: 400 },
       );
     }
 
-    const { date, timeBlockId, committee, capacity } = body as Record<string, unknown>;
+    const { date, timeBlockId, committee, capacity } = body as Record<
+      string,
+      unknown
+    >;
 
-    if (typeof date !== 'string' || date.trim() === '') {
+    if (typeof date !== "string" || date.trim() === "") {
       return NextResponse.json(
         { error: '"date" is required and cannot be empty' },
         { status: 400 },
@@ -59,14 +69,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    if (typeof timeBlockId !== 'string' || timeBlockId.trim() === '') {
+    if (typeof timeBlockId !== "string" || timeBlockId.trim() === "") {
       return NextResponse.json(
         { error: '"timeBlockId" is required and cannot be empty' },
         { status: 400 },
       );
     }
 
-    if (typeof committee !== 'string' || committee.trim() === '') {
+    if (typeof committee !== "string" || committee.trim() === "") {
       return NextResponse.json(
         { error: '"committee" is required and cannot be empty' },
         { status: 400 },
@@ -74,7 +84,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     if (
-      typeof capacity !== 'number' ||
+      typeof capacity !== "number" ||
       !Number.isInteger(capacity) ||
       capacity <= 0
     ) {
@@ -100,6 +110,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         { status: 409 },
       );
     }
-    return NextResponse.json({ error: 'Failed to create shift' }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create shift" },
+      { status: 500 },
+    );
   }
 }
