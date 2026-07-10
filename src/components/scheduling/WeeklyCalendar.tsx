@@ -8,3 +8,15 @@ export interface WeeklyCalendarProps {
   ) => React.ReactNode;
   children?: React.ReactNode;
 }
+
+export default function WeeklyCalendar(props: WeeklyCalendarProps) {
+  return (
+    <div
+      data-stub="WeeklyCalendar"
+      style={{ border: "1px dashed #bbb", padding: 8 }}
+    >
+      <div>WeeklyCalendar · week of {props.weekStart.toDateString()}</div>
+      {props.children}
+    </div>
+  );
+}
