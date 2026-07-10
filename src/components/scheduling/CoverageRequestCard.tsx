@@ -5,3 +5,18 @@ export interface CoverageRequestCardProps {
   capacity: number;
   action?: React.ReactNode;
 }
+
+export default function ShiftCard(props: CoverageRequestCardProps) {
+  return (
+    <div
+      data-stub="CoverageRequestCard"
+      style={{ border: "1px dashed #bbb", padding: 8 }}
+    >
+      <div>
+        CoverageRequestCard · {props.shiftLabel} · {props.reason} ·{" "}
+        {props.filled}/{props.capacity}
+      </div>
+      {props.action}
+    </div>
+  );
+}
