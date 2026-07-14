@@ -14,7 +14,19 @@ export default function LoginPage() {
       const result = await signInWithPopup(auth, googleProvider);
       const token = await result.user.getIdToken();
       document.cookie = `session=${token}; path=/; max-age=3600`;
-      // TODO: redirect to /volunteer after successful sign in using useRouter
+
+      await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: result.user.displayName ?? "",
+          email: result.user.email ?? "",
+        }),
+      });
+
       router.push("/volunteer");
     } catch (err) {
       setError("Sign in failed. Please try again with a Cornell Google account.");
