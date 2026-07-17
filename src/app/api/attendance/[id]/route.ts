@@ -11,7 +11,7 @@ export async function PUT(
   context: Context,
 ): Promise<NextResponse<Attendance | { error: string }>> {
   try {
-    const { user, error } = await verifyAdmin(request);
+    const { error } = await verifyAdmin(request);
     if (error) return NextResponse.json({ error }, { status: 401 });
 
     // unwrap params because Next.js returns a Promise

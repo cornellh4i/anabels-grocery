@@ -1,12 +1,5 @@
 "use client";
-
-export interface FieldProps<T> {
-  label?: string;
-  value: T;
-  onChange: (v: T) => void;
-  error?: string;
-  disabled?: boolean;
-}
+import { FieldProps } from "./FieldProps";
 
 export default function Input(props: FieldProps<string>) {
   return (
@@ -40,11 +33,7 @@ export default function Input(props: FieldProps<string>) {
         }}
       />
 
-      {props.error && (
-        <span style={{ color: "red" }}>
-          {props.error}
-        </span>
-      )}
+      {props.error && <span style={{ color: "red" }}>{props.error}</span>}
     </label>
   );
 }

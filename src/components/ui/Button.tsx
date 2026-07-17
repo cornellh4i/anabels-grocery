@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, type CSSProperties, type ReactNode } from "react";
 
 export interface ButtonProps {
@@ -27,9 +26,7 @@ export default function Button(props: ButtonProps) {
     alignItems: "center",
     gap: "9.18px",
     borderRadius: "40px",
-    border: pressed
-      ? "0.918px solid #323B89"
-      : "0.918px dashed #323B89",
+    border: pressed ? "0.918px solid #323B89" : "0.918px dashed #323B89",
     background: pressed
       ? "rgba(19, 30, 122, 0.75)"
       : "rgba(111, 126, 252, 0.15)",
@@ -53,6 +50,7 @@ export default function Button(props: ButtonProps) {
 
   return (
     <button
+      type="button"
       data-stub="Button"
       onClick={props.onClick}
       disabled={isDisabled}

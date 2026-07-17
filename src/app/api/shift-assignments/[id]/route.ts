@@ -15,7 +15,7 @@ export async function DELETE(
   _request: NextRequest,
   context: Context,
 ): Promise<NextResponse<null | { error: string }>> {
-  const { user, error } = await verifyAuth(_request);
+  const { error } = await verifyAuth(_request);
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   const { id } = await context.params;

@@ -1,4 +1,5 @@
-import { FieldProps } from "./Fieldprops";
+"use client";
+import { FieldProps } from "./FieldProps";
 
 export interface SelectProps extends FieldProps<string> {
   options: { label: string; value: string }[];

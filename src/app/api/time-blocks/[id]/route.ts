@@ -22,7 +22,7 @@ export async function PUT(
   request: NextRequest,
   context: Context,
 ): Promise<NextResponse<TimeBlock | { error: string }>> {
-  const { user, error } = await verifyAdmin(request);
+  const { error } = await verifyAdmin(request);
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   const { id } = await context.params;
@@ -100,7 +100,7 @@ export async function DELETE(
   _request: NextRequest,
   context: Context,
 ): Promise<NextResponse<null | { error: string }>> {
-  const { user, error } = await verifyAdmin(_request);
+  const { error } = await verifyAdmin(_request);
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   const { id } = await context.params;

@@ -7,7 +7,7 @@ import { verifyAuth } from "@/lib/auth";
 export async function GET(
   request: NextRequest,
 ): Promise<NextResponse<ShiftAssignment[] | { error: string }>> {
-  const { user, error } = await verifyAuth(request);
+  const { error } = await verifyAuth(request);
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   const { searchParams } = new URL(request.url);
@@ -45,7 +45,7 @@ function isNotFound(e: unknown): boolean {
 export async function POST(
   request: NextRequest,
 ): Promise<NextResponse<ShiftAssignment | { error: string }>> {
-  const { user, error } = await verifyAuth(request);
+  const { error } = await verifyAuth(request);
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   let body: unknown;

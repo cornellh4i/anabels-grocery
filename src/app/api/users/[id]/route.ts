@@ -30,7 +30,7 @@ export async function PUT(
   request: NextRequest,
   context: Context,
 ): Promise<NextResponse<User | { error: string }>> {
-  const { user, error } = await verifyAdmin(request);
+  const { error } = await verifyAdmin(request);
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   try {

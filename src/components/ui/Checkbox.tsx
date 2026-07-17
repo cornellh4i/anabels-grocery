@@ -1,8 +1,5 @@
-import { FieldProps } from "./Fieldprops";
-
-export interface CheckboxProps extends FieldProps<string> {
-  options: { label: string; value: string }[];
-}
+"use client";
+import { FieldProps } from "./FieldProps";
 
 export default function Checkbox(props: FieldProps<boolean>) {
   return (

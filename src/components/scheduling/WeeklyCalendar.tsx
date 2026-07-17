@@ -1,3 +1,4 @@
+"use client";
 export interface WeeklyCalendarProps {
   weekStart: Date;
   onWeekChange: (nextWeekStart: Date) => void; // powers ◄ / ► / Today

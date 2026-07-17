@@ -12,7 +12,7 @@ function isValidTime(value: unknown): value is string {
 export async function GET(
   req: NextRequest,
 ): Promise<NextResponse<TimeBlock[] | { error: string }>> {
-  const { user, error } = await verifyAuth(req);
+  const { error } = await verifyAuth(req);
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   try {
@@ -31,7 +31,7 @@ export async function GET(
 export async function POST(
   request: NextRequest,
 ): Promise<NextResponse<TimeBlock | { error: string }>> {
-  const { user, error } = await verifyAdmin(request);
+  const { error } = await verifyAdmin(request);
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   let body: unknown;

@@ -28,7 +28,7 @@ export async function GET(): Promise<NextResponse> {
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const { user, error } = await verifyAdmin(request);
+  const { error } = await verifyAdmin(request);
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   try {
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
     const parsedDate = new Date(date);
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+     
     if (Number.isNaN(parsedDate.getTime())) {
       return NextResponse.json(
         { error: '"date" must be a valid ISO 8601 date string' },

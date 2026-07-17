@@ -6,7 +6,7 @@ export interface CoverageRequestCardProps {
   action?: React.ReactNode;
 }
 
-export default function ShiftCard(props: CoverageRequestCardProps) {
+export default function CoverageRequestCard(props: CoverageRequestCardProps) {
   return (
     <div
       data-stub="CoverageRequestCard"

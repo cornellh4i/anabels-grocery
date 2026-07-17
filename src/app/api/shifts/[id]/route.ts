@@ -15,7 +15,7 @@ export async function PUT(
   request: NextRequest,
   context: Context,
 ): Promise<NextResponse> {
-  const { user, error } = await verifyAdmin(request);
+  const { error } = await verifyAdmin(request);
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   const { id } = await context.params;
@@ -50,7 +50,7 @@ export async function PUT(
       );
     }
     const parsedDate = new Date(date);
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+     
     if (Number.isNaN(parsedDate.getTime())) {
       return NextResponse.json(
         { error: '"date" must be a valid ISO 8601 date string' },
@@ -108,7 +108,7 @@ export async function DELETE(
   _request: NextRequest,
   context: Context,
 ): Promise<NextResponse> {
-  const { user, error } = await verifyAdmin(_request);
+  const { error } = await verifyAdmin(_request);
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   const { id } = await context.params;

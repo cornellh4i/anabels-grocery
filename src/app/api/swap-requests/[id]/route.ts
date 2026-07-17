@@ -16,7 +16,7 @@ export async function PUT(
   request: NextRequest,
   context: Context,
 ): Promise<NextResponse<SwapRequest | { error: string }>> {
-  const { user, error } = await verifyAuth(request);
+  const { error } = await verifyAuth(request);
   if (error) return NextResponse.json({ error }, { status: 401 });
 
   const { id } = await context.params;
