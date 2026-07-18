@@ -3,7 +3,7 @@
 // This is the stable auth module: import AuthProvider/useAuth from here.
 // In development they resolve to the mocks below; in production they resolve
 // to the real Firebase implementation in AuthContext.tsx. Ideally, delete
-// this file though once ready for deployment
+// this file though once ready for deployment.
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   AuthProvider as FirebaseAuthProvider,
@@ -14,7 +14,7 @@ type Role = "VOLUNTEER" | "ADMIN";
 
 // Temporary: stand-in for the User type from the auth folder
 export type AppUser = {
-  id: number;
+  id: string;
   name: string;
   email: string;
   role: Role;
@@ -23,14 +23,14 @@ export type AppUser = {
 export const isDev = process.env.NODE_ENV === "development";
 
 export const mockedvolunteer: AppUser = {
-  id: 6767,
+  id: "volunteer-1",
   name: "Andrew Zhang",
   email: "happyguineapig888@gmail.com",
   role: "VOLUNTEER",
 };
 
 export const mockedadmin: AppUser = {
-  id: 1202,
+  id: "admin-1",
   name: "Maia Schlesiger",
   email: "maias@gmail.com",
   role: "ADMIN",
@@ -44,7 +44,7 @@ type MockAuthContextType = {
 
 const MockAuthContext = createContext<MockAuthContextType>({
   user: null,
-  token: null,
+  token: "temp-token",
   isLoading: true,
 });
 
@@ -57,8 +57,11 @@ function MockAuthProvider({ children }: { children: React.ReactNode }) {
     console.log("Mocked Auth: :", user?.role ?? "none");
   }, [user]);
 
+  // data hooks are expected to be dormant
   return (
-    <MockAuthContext.Provider value={{ user, token: null, isLoading: false }}>
+    <MockAuthContext.Provider
+      value={{ user, token: "stand-in-token", isLoading: false }}
+    >
       {children}
       <MockUserSwitcher user={user} setUser={setUser} />
     </MockAuthContext.Provider>
@@ -106,6 +109,7 @@ function MockUserSwitcher({
       {Object.entries(mockUsers).map(([label, mockUser]) => (
         <button
           key={label}
+          type="button"
           onClick={() => setUser(mockUser)}
           style={{
             padding: "2px 8px",
