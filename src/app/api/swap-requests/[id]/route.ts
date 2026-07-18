@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { SwapRequest } from "@/types";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { verifyAuth } from "@/lib/auth";
 
 type Context = { params: Promise<{ id: string }> };
 
@@ -15,6 +16,9 @@ export async function PUT(
   request: NextRequest,
   context: Context,
 ): Promise<NextResponse<SwapRequest | { error: string }>> {
+  const { error } = await verifyAuth(request);
+  if (error) return NextResponse.json({ error }, { status: 401 });
+
   const { id } = await context.params;
   let body: unknown;
   try {

@@ -1,17 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { Prisma } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { verifyAdmin } from "@/lib/auth";
 
 type Context = { params: Promise<{ id: string }> };
 
 function isNotFound(e: unknown): boolean {
-  return e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025';
+  return (
+    e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2025"
+  );
 }
 
 export async function PUT(
   request: NextRequest,
   context: Context,
 ): Promise<NextResponse> {
+  const { error } = await verifyAdmin(request);
+  if (error) return NextResponse.json({ error }, { status: 401 });
+
   const { id } = await context.params;
 
   try {
@@ -20,14 +26,14 @@ export async function PUT(
       body = await request.json();
     } catch {
       return NextResponse.json(
-        { error: 'Request body must be valid JSON' },
+        { error: "Request body must be valid JSON" },
         { status: 400 },
       );
     }
 
-    if (typeof body !== 'object' || body === null) {
+    if (typeof body !== "object" || body === null) {
       return NextResponse.json(
-        { error: 'Request body must be an object' },
+        { error: "Request body must be an object" },
         { status: 400 },
       );
     }
@@ -37,14 +43,14 @@ export async function PUT(
       unknown
     >;
 
-    if (typeof date !== 'string' || date.trim() === '') {
+    if (typeof date !== "string" || date.trim() === "") {
       return NextResponse.json(
         { error: '"date" is required and cannot be empty' },
         { status: 400 },
       );
     }
     const parsedDate = new Date(date);
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+     
     if (Number.isNaN(parsedDate.getTime())) {
       return NextResponse.json(
         { error: '"date" must be a valid ISO 8601 date string' },
@@ -52,14 +58,14 @@ export async function PUT(
       );
     }
 
-    if (typeof timeBlockId !== 'string' || timeBlockId.trim() === '') {
+    if (typeof timeBlockId !== "string" || timeBlockId.trim() === "") {
       return NextResponse.json(
         { error: '"timeBlockId" is required and cannot be empty' },
         { status: 400 },
       );
     }
 
-    if (typeof committee !== 'string' || committee.trim() === '') {
+    if (typeof committee !== "string" || committee.trim() === "") {
       return NextResponse.json(
         { error: '"committee" is required and cannot be empty' },
         { status: 400 },
@@ -67,7 +73,7 @@ export async function PUT(
     }
 
     if (
-      typeof capacity !== 'number' ||
+      typeof capacity !== "number" ||
       !Number.isInteger(capacity) ||
       capacity <= 0
     ) {
@@ -89,9 +95,12 @@ export async function PUT(
     return NextResponse.json(updatedShift, { status: 200 });
   } catch (err: unknown) {
     if (isNotFound(err)) {
-      return NextResponse.json({ error: 'Shift not found' }, { status: 404 });
+      return NextResponse.json({ error: "Shift not found" }, { status: 404 });
     }
-    return NextResponse.json({ error: 'Failed to update shift' }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update shift" },
+      { status: 500 },
+    );
   }
 }
 
@@ -99,6 +108,9 @@ export async function DELETE(
   _request: NextRequest,
   context: Context,
 ): Promise<NextResponse> {
+  const { error } = await verifyAdmin(_request);
+  if (error) return NextResponse.json({ error }, { status: 401 });
+
   const { id } = await context.params;
 
   try {
@@ -106,8 +118,11 @@ export async function DELETE(
     return new NextResponse(null, { status: 204 });
   } catch (err: unknown) {
     if (isNotFound(err)) {
-      return NextResponse.json({ error: 'Shift not found' }, { status: 404 });
+      return NextResponse.json({ error: "Shift not found" }, { status: 404 });
     }
-    return NextResponse.json({ error: 'Failed to delete shift' }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete shift" },
+      { status: 500 },
+    );
   }
 }
