@@ -1,18 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { Prisma } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
-import type { ShiftAssignment } from '@/types';
+import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import type { ShiftAssignment } from "@/types";
+import { verifyAuth } from "@/lib/auth";
 
-export async function GET(request: NextRequest): Promise<
-  NextResponse<ShiftAssignment[] | { error: string }>
-> {
+export async function GET(
+  request: NextRequest,
+): Promise<NextResponse<ShiftAssignment[] | { error: string }>> {
+  const { error } = await verifyAuth(request);
+  if (error) return NextResponse.json({ error }, { status: 401 });
+
   const { searchParams } = new URL(request.url);
-  const userId = searchParams.get('userId') ?? undefined;
+  const userId = searchParams.get("userId") ?? undefined;
 
   try {
     const assignments = await prisma.shiftAssignment.findMany({
       where: userId ? { userId } : undefined,
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
       include: {
         user: true,
         shift: {
@@ -26,7 +30,7 @@ export async function GET(request: NextRequest): Promise<
     return NextResponse.json(assignments);
   } catch {
     return NextResponse.json(
-      { error: 'Failed to fetch shift assignments' },
+      { error: "Failed to fetch shift assignments" },
       { status: 500 },
     );
   }
@@ -34,40 +38,43 @@ export async function GET(request: NextRequest): Promise<
 
 function isNotFound(e: unknown): boolean {
   return (
-    e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025'
+    e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2025"
   );
 }
 
 export async function POST(
   request: NextRequest,
 ): Promise<NextResponse<ShiftAssignment | { error: string }>> {
+  const { error } = await verifyAuth(request);
+  if (error) return NextResponse.json({ error }, { status: 401 });
+
   let body: unknown;
   try {
     body = await request.json();
   } catch {
     return NextResponse.json(
-      { error: 'Request body must be valid JSON' },
+      { error: "Request body must be valid JSON" },
       { status: 400 },
     );
   }
 
-  if (typeof body !== 'object' || body === null) {
+  if (typeof body !== "object" || body === null) {
     return NextResponse.json(
-      { error: 'Request body must be an object' },
+      { error: "Request body must be an object" },
       { status: 400 },
     );
   }
 
   const { userId, shiftId } = body as Record<string, unknown>;
 
-  if (typeof userId !== 'string' || userId.trim() === '') {
+  if (typeof userId !== "string" || userId.trim() === "") {
     return NextResponse.json(
       { error: '"userId" is required and cannot be empty' },
       { status: 400 },
     );
   }
 
-  if (typeof shiftId !== 'string' || shiftId.trim() === '') {
+  if (typeof shiftId !== "string" || shiftId.trim() === "") {
     return NextResponse.json(
       { error: '"shiftId" is required and cannot be empty' },
       { status: 400 },
@@ -89,7 +96,7 @@ export async function POST(
 
     if (shift._count.assignments >= shift.capacity) {
       return NextResponse.json(
-        { error: 'Shift is at capacity' },
+        { error: "Shift is at capacity" },
         { status: 409 },
       );
     }
@@ -106,12 +113,12 @@ export async function POST(
   } catch (e) {
     if (isNotFound(e)) {
       return NextResponse.json(
-        { error: 'Referenced user or shift not found' },
+        { error: "Referenced user or shift not found" },
         { status: 404 },
       );
     }
     return NextResponse.json(
-      { error: 'Failed to create shift assignment' },
+      { error: "Failed to create shift assignment" },
       { status: 500 },
     );
   }
