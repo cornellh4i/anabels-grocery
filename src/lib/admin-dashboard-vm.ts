@@ -17,6 +17,8 @@ export type ShiftCardVm = {
   id: string;
   committee: string;
   date: Date;
+  startTime: string;
+  endTime: string;
   timeLabel: string;
   capacityLabel: string;
   filled: number;
@@ -40,6 +42,7 @@ export type CoverageRequestVm = {
   requesterName: string;
   reason: string;
   capacityLabel: string;
+  capacity: number;
   fulfillmentCount: number;
   status: SwapRequestWithDetails["status"];
 };
@@ -101,6 +104,8 @@ function toShiftCardVm(shift: Shift): ShiftCardVm {
     id: shift.id,
     committee: shift.committee,
     date: shift.date,
+    startTime: shift.timeBlock.startTime,
+    endTime: shift.timeBlock.endTime,
     timeLabel: formatTimeRange(
       shift.timeBlock.startTime,
       shift.timeBlock.endTime,
@@ -219,6 +224,7 @@ export function toCoverageStripItems(requests: SwapRequestWithDetails[]) {
           requesterName: request.shiftAssignment.user.name,
           reason: request.reason ?? "No reason provided",
           capacityLabel: `Capacity ${request.shiftAssignment.shift.capacity}`,
+          capacity: request.shiftAssignment.shift.capacity,
           fulfillmentCount: request.fulfillments.length,
           status: request.status,
         }) satisfies CoverageRequestVm,

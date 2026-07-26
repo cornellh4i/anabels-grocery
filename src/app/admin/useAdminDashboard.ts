@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { useAllShifts } from "@/hooks/useAllShifts";
 import { useSwapRequests } from "@/hooks/useSwapRequests";
 import {
@@ -10,6 +11,7 @@ import {
 } from "@/lib/admin-dashboard-vm";
 
 export function useAdminDashboard() {
+  const { isLoading: authLoading } = useAuth();
   const {
     data: shifts,
     isLoading: shiftsLoading,
@@ -30,12 +32,13 @@ export function useAdminDashboard() {
         requests,
         weekStart,
         lowStaffedExpanded,
-        shiftsLoading,
+        shiftsLoading: authLoading || shiftsLoading,
         shiftsError,
-        requestsLoading: reqLoading,
+        requestsLoading: authLoading || reqLoading,
         requestsError: reqError,
       }),
     [
+      authLoading,
       lowStaffedExpanded,
       reqError,
       reqLoading,
