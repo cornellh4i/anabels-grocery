@@ -179,6 +179,10 @@ export default function ScheduleBoard({ schedule }: ScheduleBoardProps) {
         <p className="font-jakarta text-sm text-brand-red">
           {schedule.error.message}
         </p>
+      ) : schedule.isEmpty ? (
+        <p className="font-jakarta text-sm text-brand-soft-text">
+          No shifts scheduled this week.
+        </p>
       ) : (
         <div className="flex">
           <div className="flex w-14 shrink-0 flex-col">

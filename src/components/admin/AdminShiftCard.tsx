@@ -62,11 +62,15 @@ export default function AdminShiftCard(props: AdminShiftCardProps) {
           {props.committee}
         </p>
         <p className="truncate font-jakarta text-xs text-black">{props.time}</p>
-        {props.variant === "low-staffed" ? (
-          <p className="truncate font-jakarta text-[10px] font-semibold text-brand-red">
-            {props.filled}/{props.capacity} filled
-          </p>
-        ) : null}
+        <p
+          className={`truncate font-jakarta text-[10px] font-semibold ${
+            props.variant === "low-staffed"
+              ? "text-brand-red"
+              : "text-brand-soft-text"
+          }`}
+        >
+          {props.filled}/{props.capacity} filled
+        </p>
       </div>
 
       {props.assignees.length > 0 ? (
