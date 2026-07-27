@@ -17,6 +17,13 @@ export default function TimeBlocksPage() {
     setLoading(true);
     const res = await fetch('/api/time-blocks');
     const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.error ?? 'Failed to fetch time blocks');
+      setLoading(false);
+      return;
+    }
+
     setTimeBlocks(data);
     setLoading(false);
   }, []);

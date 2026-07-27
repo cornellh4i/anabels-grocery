@@ -7,8 +7,9 @@ export default function ShiftsPage() {
     <div className="max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold text-gray-900 mb-4">Shifts</h1>
       <p className="text-gray-500 text-sm">
-        TODO: Display all shifts grouped by date. Include a form to create, edit,
-        and delete shifts. Show the assigned volunteer and associated time block.
+        TODO: Display all shifts grouped by date. Include a form to create,
+        edit, and delete shifts. Show the assigned volunteer and associated time
+        block.
       </p>
     </div>
   );
