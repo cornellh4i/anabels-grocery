@@ -3,6 +3,28 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Figma tokens — "Colors" variable collection, Mode 1 (see vars.json) */
+  --color-brand-blue: #323b89;
+  --color-brand-red: #ff0004;
+  --color-brand-green: #3bad4b;
+
+  --color-shift-covered-icon: #7b7b7b;
+  --color-shift-uncovered-icon: #d9d9d9;
+  --color-shift-uncovered-icon-empty: #f1bebe;
+  --color-shift-no-coverage: #de6969;
+  --color-shift-current: #f2f2f2;
+  --color-shift-past: rgba(245, 245, 245, 0.2);
+  --color-shift-past-coverage: rgba(123, 123, 123, 0.3);
+  --color-shift-text: #3e3e3e;
+  --color-shift-past-text: rgba(0, 0, 0, 0.3);
+
+  --color-status-red-light: #fff0f0;
+  --color-status-green-light: #e7f5e9;
+
+  --color-text-soft: #676767;
+  --color-gray-lines: #ebebeb;
+  --color-surface: #f8f8f8;
 }
 
 @theme inline {
@@ -10,6 +32,27 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-brand-blue: var(--color-brand-blue);
+  --color-brand-red: var(--color-brand-red);
+  --color-brand-green: var(--color-brand-green);
+
+  --color-shift-covered-icon: var(--color-shift-covered-icon);
+  --color-shift-uncovered-icon: var(--color-shift-uncovered-icon);
+  --color-shift-uncovered-icon-empty: var(--color-shift-uncovered-icon-empty);
+  --color-shift-no-coverage: var(--color-shift-no-coverage);
+  --color-shift-current: var(--color-shift-current);
+  --color-shift-past: var(--color-shift-past);
+  --color-shift-past-coverage: var(--color-shift-past-coverage);
+  --color-shift-text: var(--color-shift-text);
+  --color-shift-past-text: var(--color-shift-past-text);
+
+  --color-status-red-light: var(--color-status-red-light);
+  --color-status-green-light: var(--color-status-green-light);
+
+  --color-text-soft: var(--color-text-soft);
+  --color-gray-lines: var(--color-gray-lines);
+  --color-surface: var(--color-surface);
 }
 
 @media (prefers-color-scheme: dark) {
