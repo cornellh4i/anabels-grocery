@@ -1,9 +1,4 @@
 "use client";
-// TODO: Create AuthContext with { user, token, isLoading }
-// TODO: Create AuthProvider that listens to onAuthStateChanged
-//       - when user signs in, call user.getIdToken() and store token in state
-//       - when user signs out, set user and token to null
-// TODO: Export useAuth() hook that returns the context
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "@/lib/firebase";
