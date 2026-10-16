@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/auth";
+import { verifyAuth } from "@/lib/auth";
 
-export async function GET(): Promise<NextResponse> {
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  const { error } = await verifyAuth(req);
+  if (error) return NextResponse.json({ error }, { status: 401 });
+
   try {
     const shifts = await prisma.shift.findMany({
       orderBy: {
@@ -61,7 +65,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
     const parsedDate = new Date(date);
-     
+
     if (Number.isNaN(parsedDate.getTime())) {
       return NextResponse.json(
         { error: '"date" must be a valid ISO 8601 date string' },

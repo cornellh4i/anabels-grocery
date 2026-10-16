@@ -2,13 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import type { User } from "@/types";
 import { verifyAdmin } from "@/lib/auth";
+import { verifyAuth } from "@/lib/auth";
 
 type Context = { params: Promise<{ id: string }> };
 
 export async function GET(
-  _request: NextRequest,
+  req: NextRequest,
   context: Context,
 ): Promise<NextResponse<User | { error: string }>> {
+  const { error } = await verifyAuth(req);
+  if (error) return NextResponse.json({ error }, { status: 401 });
+
   try {
     const { id } = await context.params;
     const user = await prisma.user.findUnique({ where: { id } });
