@@ -1,4 +1,5 @@
 import { PrismaClient, Role, SwapStatus, AttendanceStatus } from '@prisma/client';
+import { withTester } from './testers';
 
 const prisma = new PrismaClient();
 
@@ -27,9 +28,9 @@ async function main() {
 
   // ─── Users ────────────────────────────────────────────────────
   const [admin1, admin2, v1, v2, v3, v4, v5, v6, v7, v8] = await Promise.all([
-    prisma.user.create({ data: { firebaseUid: 'firebase-admin-001', name: 'Sarah Chen',      email: 'sc2345@cornell.edu', role: Role.ADMIN } }),
+    prisma.user.create({ data: withTester({ firebaseUid: 'firebase-admin-001', name: 'Sarah Chen',      email: 'sc2345@cornell.edu', role: Role.ADMIN }) }),
     prisma.user.create({ data: { firebaseUid: 'firebase-admin-002', name: 'Marcus Johnson',  email: 'mj4567@cornell.edu', role: Role.ADMIN } }),
-    prisma.user.create({ data: { firebaseUid: 'firebase-vol-001',   name: 'Aisha Patel',     email: 'ap1234@cornell.edu', role: Role.VOLUNTEER } }),
+    prisma.user.create({ data: withTester({ firebaseUid: 'firebase-vol-001',   name: 'Aisha Patel',     email: 'ap1234@cornell.edu', role: Role.VOLUNTEER }) }),
     prisma.user.create({ data: { firebaseUid: 'firebase-vol-002',   name: 'Jake Rivera',     email: 'jr5678@cornell.edu', role: Role.VOLUNTEER } }),
     prisma.user.create({ data: { firebaseUid: 'firebase-vol-003',   name: 'Emily Park',      email: 'ep9012@cornell.edu', role: Role.VOLUNTEER } }),
     prisma.user.create({ data: { firebaseUid: 'firebase-vol-004',   name: 'Liam Okafor',     email: 'lo3456@cornell.edu', role: Role.VOLUNTEER } }),
