@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
+
+// Replace with AuthContext when ready to deploy
+import { useAuth } from "@/context/auth";
 import type { SwapStatus } from "@/types";
 
 export type SwapRequestWithDetails = {
@@ -72,7 +74,8 @@ export function useSwapRequests(status?: SwapStatus): UseSwapRequestsReturn {
           throw new Error("Failed to fetch swap requests");
         }
 
-        const swapRequests = (await response.json()) as SwapRequestWithDetails[];
+        const swapRequests =
+          (await response.json()) as SwapRequestWithDetails[];
         const filteredRequests = status
           ? swapRequests.filter((request) => request.status === status)
           : swapRequests;

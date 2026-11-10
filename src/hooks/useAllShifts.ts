@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
+
+// Replace with AuthContext when ready to deploy
+import { useAuth } from "@/context/auth";
 
 export type Shift = {
   id: string;

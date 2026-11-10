@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
+
+// Replace with AuthContext when ready to deploy
+import { useAuth } from "@/context/auth";
 
 export type OpenSwapRequest = {
   swapRequestId: string;
@@ -71,19 +73,21 @@ export function useOpenSwapRequests(): UseOpenSwapRequestsReturn {
 
         const nextData = swapRequests
           .filter((sr) => sr.status === "OPEN")
-          .map((sr): OpenSwapRequest => ({
-            swapRequestId: sr.id,
-            reason: sr.reason,
-            shiftAssignment: {
-              id: sr.shiftAssignment.id,
-              userId: sr.shiftAssignment.userId,
-            },
-            shift: {
-              id: sr.shiftAssignment.shift.id,
-              date: sr.shiftAssignment.shift.date,
-              committee: sr.shiftAssignment.shift.committee,
-            },
-          }));
+          .map(
+            (sr): OpenSwapRequest => ({
+              swapRequestId: sr.id,
+              reason: sr.reason,
+              shiftAssignment: {
+                id: sr.shiftAssignment.id,
+                userId: sr.shiftAssignment.userId,
+              },
+              shift: {
+                id: sr.shiftAssignment.shift.id,
+                date: sr.shiftAssignment.shift.date,
+                committee: sr.shiftAssignment.shift.committee,
+              },
+            }),
+          );
 
         if (!isCancelled) {
           setData(nextData);
