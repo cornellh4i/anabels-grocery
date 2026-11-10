@@ -25,12 +25,31 @@
   --color-text-soft: #676767;
   --color-gray-lines: #ebebeb;
   --color-surface: #f8f8f8;
+
+  /* Design system tokens (values already defined above are aliased, not duplicated) */
+  --color-brand-blue-muted: #727697;
+  --color-border: var(--color-shift-uncovered-icon);
+  --color-border-subtle: var(--color-shift-past-coverage);
+  --color-text-body: var(--color-shift-text);
+  --color-text-label: var(--color-shift-covered-icon);
+  --color-text-disabled: var(--color-shift-past-text);
+  --color-text-on-fill: #fafafa;
+
+  --color-approve-text: #007a55;
+  --color-approve-fill: #009966;
+  --color-approve-hover-fill: #def4bd;
+  --color-approve-hover-ring: #a4f4cf;
+
+  --color-deny-border: var(--color-shift-no-coverage);
+  --color-deny-text: #c70036;
+  --color-deny-hover-fill: #fff1f2;
+  --color-deny-hover-ring: #ffccd3;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-plus-jakarta-sans);
   --font-mono: var(--font-geist-mono);
 
   --color-brand-blue: var(--color-brand-blue);
@@ -53,6 +72,29 @@
   --color-text-soft: var(--color-text-soft);
   --color-gray-lines: var(--color-gray-lines);
   --color-surface: var(--color-surface);
+
+  --color-brand-blue-muted: var(--color-brand-blue-muted);
+  --color-border: var(--color-border);
+  --color-border-subtle: var(--color-border-subtle);
+  --color-text-body: var(--color-text-body);
+  --color-text-label: var(--color-text-label);
+  --color-text-disabled: var(--color-text-disabled);
+  --color-text-on-fill: var(--color-text-on-fill);
+  --color-approve-text: var(--color-approve-text);
+  --color-approve-fill: var(--color-approve-fill);
+  --color-approve-hover-fill: var(--color-approve-hover-fill);
+  --color-approve-hover-ring: var(--color-approve-hover-ring);
+  --color-deny-border: var(--color-deny-border);
+  --color-deny-text: var(--color-deny-text);
+  --color-deny-hover-fill: var(--color-deny-hover-fill);
+  --color-deny-hover-ring: var(--color-deny-hover-ring);
+
+  --radius-pill: 8px;
+  --radius-approval: 10px;
+  --radius-control: 12px;
+  --radius-card: 16px;
+  --shadow-card: 0 0 8px 0 rgba(0, 0, 0, 0.1);
+  --shadow-approval: 1px 1px 1px 0 rgba(145, 145, 145, 0.24);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -65,5 +107,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
