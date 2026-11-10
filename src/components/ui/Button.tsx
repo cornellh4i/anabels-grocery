@@ -22,9 +22,9 @@ const variants = {
   ghost: "bg-transparent text-text-body enabled:hover:bg-surface",
   submitted: "bg-brand-blue text-text-on-fill",
   approve: "bg-white text-approve-text ring-1 ring-inset ring-brand-green enabled:hover:bg-approve-hover-fill",
-  approved: "bg-approve-fill text-white shadow-approval",
+  approved: "bg-approve-fill text-white shadow-approval enabled:hover:bg-approve-hover-fill enabled:hover:text-approve-text enabled:hover:ring-1 enabled:hover:ring-inset enabled:hover:ring-brand-green enabled:hover:shadow-none",
   deny: "bg-white text-deny-text ring-1 ring-inset ring-deny-border enabled:hover:bg-deny-hover-fill",
-  denied: "bg-deny-border text-white shadow-approval",
+  denied: "bg-deny-border text-white shadow-approval enabled:hover:bg-deny-hover-fill enabled:hover:text-deny-text enabled:hover:ring-1 enabled:hover:ring-inset enabled:hover:ring-deny-border enabled:hover:shadow-none",
   day: "bg-white text-text-disabled ring-1 ring-inset ring-border enabled:hover:bg-brand-blue-muted enabled:hover:text-white",
   "day-active": "bg-brand-blue text-white font-bold",
   "day-muted": "bg-brand-blue-muted text-white font-bold",
@@ -32,9 +32,9 @@ const variants = {
 
 const decisions = {
   approve: { label: "Approve", icon: "approve" },
-  approved: { label: "Approved", icon: "undo-approve" },
+  approved: { label: "Approved", icon: "approve" },
   deny: { label: "Deny", icon: "deny" },
-  denied: { label: "Denied", icon: "undo-deny" },
+  denied: { label: "Denied", icon: "deny" },
 };
 
 /** Callers control decision/day variants and handle save or undo in onClick. */
@@ -53,15 +53,22 @@ export default function Button(props: ButtonProps) {
 
   return (
     <button type="button"
-      className={`inline-flex shrink-0 items-center justify-center self-center font-sans cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand-blue disabled:cursor-not-allowed ${sizing} ${variants[variant]} ${props.fullWidth ? "w-full" : ""} ${variant !== "submitted" ? "disabled:bg-border disabled:text-text-on-fill disabled:shadow-none disabled:ring-0" : ""}`}
+      className={`group inline-flex shrink-0 items-center justify-center self-center font-sans cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand-blue disabled:cursor-not-allowed ${sizing} ${variants[variant]} ${props.fullWidth ? "w-full" : ""} ${variant !== "submitted" ? "disabled:bg-border disabled:text-text-on-fill disabled:shadow-none disabled:ring-0" : ""}`}
       disabled={props.disabled || props.loading || variant === "submitted"}
       aria-busy={props.loading || undefined}
       aria-pressed={isDay ? variant === "day-active" : decision ? decided : undefined}
       aria-label={decided ? `${decision?.label}. Undo ${variant === "approved" ? "approval" : "denial"}` : undefined}
       onClick={props.onClick}>
       {props.leftIcon ?? (decision && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={`/icons/${decision.icon}.svg`} alt="" className={decided ? "brightness-0 invert" : undefined} />
+        <span className="flex size-[15px] shrink-0 items-center justify-center" aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`/icons/${decision.icon}.svg`} alt=""
+            className={decided ? "brightness-0 invert group-enabled:group-hover:hidden" : undefined} />
+          {decided && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={`/icons/undo-${decision.icon}.svg`} alt="" className="hidden group-enabled:group-hover:block" />
+          )}
+        </span>
       ))}
       <span>{props.loading ? "Loading..." : props.children ?? decision?.label ?? (variant === "submitted" ? "Submitted" : null)}</span>
       {props.rightIcon}
