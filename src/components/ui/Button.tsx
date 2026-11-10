@@ -1,8 +1,10 @@
 "use client";
-import { useState, type CSSProperties, type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 export interface ButtonProps {
-  variant?: "primary" | "secondary" | "danger" | "ghost";
+  variant?: "primary" | "secondary" | "danger" | "ghost" | "submitted"
+    | "approve" | "approved" | "deny" | "denied"
+    | "day" | "day-active" | "day-muted";
   size?: "sm" | "md";
   loading?: boolean;
   disabled?: boolean;
@@ -13,59 +15,55 @@ export interface ButtonProps {
   children?: ReactNode;
 }
 
+const variants = {
+  primary: "bg-brand-blue-muted text-text-on-fill enabled:hover:bg-brand-blue",
+  secondary: "bg-white text-brand-blue ring-1 ring-inset ring-brand-blue enabled:hover:bg-surface",
+  danger: "bg-deny-border text-white enabled:hover:bg-deny-text",
+  ghost: "bg-transparent text-text-body enabled:hover:bg-surface",
+  submitted: "bg-brand-blue text-text-on-fill",
+  approve: "bg-white text-approve-text ring-1 ring-inset ring-brand-green enabled:hover:bg-approve-hover-fill",
+  approved: "bg-approve-fill text-white shadow-approval",
+  deny: "bg-white text-deny-text ring-1 ring-inset ring-deny-border enabled:hover:bg-deny-hover-fill",
+  denied: "bg-deny-border text-white shadow-approval",
+  day: "bg-white text-text-disabled ring-1 ring-inset ring-border enabled:hover:bg-brand-blue-muted enabled:hover:text-white",
+  "day-active": "bg-brand-blue text-white font-bold",
+  "day-muted": "bg-brand-blue-muted text-white font-bold",
+};
+
+const decisions = {
+  approve: { label: "Approve", icon: "approve" },
+  approved: { label: "Approved", icon: "undo-approve" },
+  deny: { label: "Deny", icon: "deny" },
+  denied: { label: "Denied", icon: "undo-deny" },
+};
+
+/** Callers control decision/day variants and handle save or undo in onClick. */
 export default function Button(props: ButtonProps) {
-  const [pressed, setPressed] = useState(false);
-
-  const size = props.size ?? "md";
-  const isDisabled = props.disabled || props.loading;
-
-  const mainButtonStyle: CSSProperties = {
-    display: "flex",
-    padding: "8px 24px",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: "9.18px",
-    borderRadius: "40px",
-    border: pressed ? "0.918px solid #323B89" : "0.918px dashed #323B89",
-    background: pressed
-      ? "rgba(19, 30, 122, 0.75)"
-      : "rgba(111, 126, 252, 0.15)",
-    color: pressed ? "white" : "inherit",
-    cursor: isDisabled ? "not-allowed" : "pointer",
-    width: props.fullWidth ? "100%" : "auto",
-  };
-
-  const smallButtonStyle: CSSProperties = {
-    display: "flex",
-    height: "33px",
-    padding: "8px 20px",
-    alignItems: "center",
-    gap: "10px",
-    borderRadius: "40px",
-    border: "0.75px solid rgba(0, 0, 0, 0.20)",
-    background: pressed ? "rgba(111, 126, 252, 0.15)" : "transparent",
-    cursor: isDisabled ? "not-allowed" : "pointer",
-    width: props.fullWidth ? "100%" : "auto",
-  };
+  const variant = props.variant ?? "primary";
+  const decision = variant in decisions ? decisions[variant as keyof typeof decisions] : undefined;
+  const isDay = variant.startsWith("day");
+  const decided = variant === "approved" || variant === "denied";
+  const sizing = decision
+    ? "gap-2 rounded-approval px-[17px] py-[9px] text-sm font-medium leading-5"
+    : isDay
+      ? "rounded-pill px-3 py-1.5 text-sm leading-[18px]"
+      : props.size === "sm"
+        ? "gap-2 rounded-full px-5 py-2 text-xs leading-[17px]"
+        : "gap-[9px] rounded-control px-6 py-3 text-base font-semibold leading-5";
 
   return (
-    <button
-      type="button"
-      data-stub="Button"
-      onClick={props.onClick}
-      disabled={isDisabled}
-      onPointerDown={() => {
-        if (!isDisabled) {
-          setPressed(true);
-        }
-      }}
-      onPointerUp={() => setPressed(false)}
-      onPointerLeave={() => setPressed(false)}
-      onPointerCancel={() => setPressed(false)}
-      style={size === "sm" ? smallButtonStyle : mainButtonStyle}
-    >
-      {props.leftIcon}
-      <span>{props.loading ? "Loading..." : props.children}</span>
+    <button type="button"
+      className={`inline-flex shrink-0 items-center justify-center self-center font-sans cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand-blue disabled:cursor-not-allowed ${sizing} ${variants[variant]} ${props.fullWidth ? "w-full" : ""} ${variant !== "submitted" ? "disabled:bg-border disabled:text-text-on-fill disabled:shadow-none disabled:ring-0" : ""}`}
+      disabled={props.disabled || props.loading || variant === "submitted"}
+      aria-busy={props.loading || undefined}
+      aria-pressed={isDay ? variant === "day-active" : decision ? decided : undefined}
+      aria-label={decided ? `${decision?.label}. Undo ${variant === "approved" ? "approval" : "denial"}` : undefined}
+      onClick={props.onClick}>
+      {props.leftIcon ?? (decision && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={`/icons/${decision.icon}.svg`} alt="" className={decided ? "brightness-0 invert" : undefined} />
+      ))}
+      <span>{props.loading ? "Loading..." : props.children ?? decision?.label ?? (variant === "submitted" ? "Submitted" : null)}</span>
       {props.rightIcon}
     </button>
   );

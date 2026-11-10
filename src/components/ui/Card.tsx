@@ -3,25 +3,10 @@ export interface CardProps {
   children?: React.ReactNode;
 }
 
-export default function Card(props: CardProps) {
+export default function Card({ className = "", children }: CardProps) {
   return (
-    <div
-      data-stub="Card"
-      className={props.className}
-      style={{
-        display: "flex",
-        width: "100%",
-        maxWidth: "568px",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        border: "1px dashed #bbb",
-        borderRadius: "8px",
-        padding: "16px",
-        background: "#fff",
-      }}
-    >
-      <div style={{ fontSize: "12px", opacity: 0.6 }}>Card placeholder</div>
-      {props.children}
+    <div className={`flex w-full max-w-[568px] flex-col items-start gap-[18px] rounded-lg border border-border bg-white px-[35px] py-[30px] text-black ${className}`}>
+      {children}
     </div>
   );
 }
