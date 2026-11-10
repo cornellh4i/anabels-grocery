@@ -19,4 +19,5 @@ export { default as Checkbox } from "./Checkbox";
 
 export type { FieldProps } from "./FieldProps";
 
-export type { ToastKind, ToastApi } from "./Toast";
+export { default as Toast, ToastProvider, useToast } from "./Toast";
+export type { ToastKind, ToastApi, ToastProps } from "./Toast";

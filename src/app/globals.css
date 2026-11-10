@@ -21,6 +21,7 @@
 
   --color-status-red-light: #fff0f0;
   --color-status-green-light: #e7f5e9;
+  --color-status-completed: #ceefc3;
 
   --color-text-soft: #676767;
   --color-gray-lines: #ebebeb;
@@ -68,6 +69,7 @@
 
   --color-status-red-light: var(--color-status-red-light);
   --color-status-green-light: var(--color-status-green-light);
+  --color-status-completed: var(--color-status-completed);
 
   --color-text-soft: var(--color-text-soft);
   --color-gray-lines: var(--color-gray-lines);

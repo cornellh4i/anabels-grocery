@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="stroke0_0_4" fill="white">
+<path d="M1.14286 0H6.85714C7.4875 0 8 0.5125 8 1.14286V6.85714C8 7.4875 7.4875 8 6.85714 8H1.14286C0.5125 8 0 7.4875 0 6.85714V1.14286C0 0.5125 0.5125 0 1.14286 0Z"/>
+</mask>
+<path id="Square" d="M1.14286 0H6.85714C7.4875 0 8 0.5125 8 1.14286V6.85714C8 7.4875 7.4875 8 6.85714 8H1.14286C0.5125 8 0 7.4875 0 6.85714V1.14286C0 0.5125 0.5125 0 1.14286 0Z" stroke-width="1.6" stroke="#676767" mask="url(#stroke0_0_4)"/>
+</svg>
